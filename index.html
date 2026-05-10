@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ICC Cricket Management System</title>
+<meta name="description" content="Professional ICC Cricket analytics dashboard — countries, players, matches & rankings."/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ═══════════════ PAGE LOADER ═══════════════ -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
+  </div>
+
+  <!-- Desktop nav links -->
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom active" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+  </div>
+
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
+    <button class="notification-btn" id="notifBtn" aria-label="Notifications">
+      <i class="fas fa-bell fa-lg"></i>
+      <span class="notif-badge"></span>
+    </button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="live-badge mb-3">
+    <span class="live-dot"></span> LIVE MATCH
+    <span id="liveTicker" style="font-size:.7rem;color:var(--text);margin-left:6px;">Loading…</span>
+  </div>
+
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link active" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard <span class="sidebar-badge">Home</span></a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="statistics.html" class="sidebar-link"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link"><i class="fas fa-medal"></i> Tournaments</a>
+
+  <span class="sidebar-section-title">More</span>
+  <a href="teams.html" class="sidebar-link"><i class="fas fa-users"></i> Teams</a>
+  <a href="search.html" class="sidebar-link"><i class="fas fa-search"></i> Search</a>
+  <a href="about.html" class="sidebar-link"><i class="fas fa-info-circle"></i> About</a>
+
+  <div class="sidebar-footer">
+    <a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main class="main-content" id="mainContent">
+
+  <!-- Hero -->
+  <section class="hero-section animate-in">
+    <div class="live-badge"><span class="live-dot"></span> Season 2024–25 Active</div>
+    <p class="hero-greeting">&#9679; WELCOME BACK, ADMIN</p>
+    <h1 class="hero-title">ICC <span>Cricket Management</span> System</h1>
+    <p class="hero-subtitle">Monitor live matches, player stats, country rankings &amp; tournament data in one place.</p>
+    <div class="hero-actions">
+      <button class="btn-primary-custom" id="addPlayerBtn"><i class="fas fa-plus"></i> Add Player</button>
+      <button class="btn-outline-custom" id="viewMatchesBtn"><i class="fas fa-play"></i> View Matches</button>
+    </div>
+  </section>
+
+  <!-- Quick Stats Banner -->
+  <div class="quick-stats animate-in delay-1">
+    <div class="quick-stat-item">
+      <div class="quick-stat-value">3</div>
+      <div class="quick-stat-label">Live Matches</div>
+    </div>
+    <div class="qs-divider"></div>
+    <div class="quick-stat-item">
+      <div class="quick-stat-value">12</div>
+      <div class="quick-stat-label">Today's Games</div>
+    </div>
+    <div class="qs-divider"></div>
+    <div class="quick-stat-item">
+      <div class="quick-stat-value">4,821</div>
+      <div class="quick-stat-label">Runs Today</div>
+    </div>
+    <div class="qs-divider"></div>
+    <div class="quick-stat-item">
+      <div class="quick-stat-value">87</div>
+      <div class="quick-stat-label">Wickets Fallen</div>
+    </div>
+    <div class="qs-divider"></div>
+    <div class="quick-stat-item">
+      <div class="quick-stat-value">16</div>
+      <div class="quick-stat-label">Nations</div>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <h2 class="section-title animate-in delay-2"><i class="fas fa-chart-bar" style="color:var(--accent)"></i> Overview</h2>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3 animate-in delay-2">
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div class="stat-icon icon-blue"><i class="fas fa-flag"></i></div>
+          <div class="stat-trend"><i class="fas fa-arrow-up fa-xs"></i> 2 new</div>
+        </div>
+        <div class="stat-value"><span class="count-up" data-target="16" data-suffix="">0</span></div>
+        <div class="stat-label">Total Countries</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="80"></div></div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3 animate-in delay-3">
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div class="stat-icon icon-green"><i class="fas fa-person-running"></i></div>
+          <div class="stat-trend"><i class="fas fa-arrow-up fa-xs"></i> +14</div>
+        </div>
+        <div class="stat-value"><span class="count-up" data-target="248" data-suffix="">0</span></div>
+        <div class="stat-label">Total Players</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="65"></div></div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3 animate-in delay-4">
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div class="stat-icon icon-purple"><i class="fas fa-baseball-bat-ball"></i></div>
+          <div class="stat-trend down"><i class="fas fa-arrow-down fa-xs"></i> -3</div>
+        </div>
+        <div class="stat-value"><span class="count-up" data-target="94" data-suffix="">0</span></div>
+        <div class="stat-label">Total Matches</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="55"></div></div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3 animate-in delay-5">
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div class="stat-icon icon-orange"><i class="fas fa-trophy"></i></div>
+          <div class="stat-trend"><i class="fas fa-arrow-up fa-xs"></i> Updated</div>
+        </div>
+        <div class="stat-value"><span class="count-up" data-target="16" data-suffix="">0</span></div>
+        <div class="stat-label">ICC Rankings</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="90"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="row g-3">
+
+    <!-- Live Matches -->
+    <div class="col-12 col-lg-4 animate-in delay-2">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.9rem"><i class="fas fa-satellite-dish" style="color:#ff4d6d"></i> Live &amp; Upcoming</h3>
+
+        <div class="match-card">
+          <div class="match-teams">
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-flag">🇮🇳</span>
+              <span class="team-name">India</span>
+            </div>
+            <span class="vs-badge">VS</span>
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-name">England</span>
+              <span class="team-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+            </div>
+          </div>
+          <div class="match-meta">
+            <span class="match-tag tag-live"><i class="fas fa-circle fa-xs"></i> LIVE</span>
+            <span style="font-size:.75rem;color:var(--muted)">287/4 (42.3 ov) · ODI</span>
+          </div>
+        </div>
+
+        <div class="match-card">
+          <div class="match-teams">
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-flag">🇦🇺</span>
+              <span class="team-name">Australia</span>
+            </div>
+            <span class="vs-badge">VS</span>
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-name">S. Africa</span>
+              <span class="team-flag">🇿🇦</span>
+            </div>
+          </div>
+          <div class="match-meta">
+            <span class="match-tag tag-completed"><i class="fas fa-check fa-xs"></i> DONE</span>
+            <span style="font-size:.75rem;color:var(--muted)">AUS won by 34 runs</span>
+          </div>
+        </div>
+
+        <div class="match-card">
+          <div class="match-teams">
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-flag">🇵🇰</span>
+              <span class="team-name">Pakistan</span>
+            </div>
+            <span class="vs-badge">VS</span>
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-name">New Zealand</span>
+              <span class="team-flag">🇳🇿</span>
+            </div>
+          </div>
+          <div class="match-meta">
+            <span class="match-tag tag-upcoming"><i class="fas fa-clock fa-xs"></i> TOMORROW</span>
+            <span style="font-size:.75rem;color:var(--muted)">14:30 IST · T20I</span>
+          </div>
+        </div>
+
+        <div class="match-card">
+          <div class="match-teams">
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-flag">🇱🇰</span>
+              <span class="team-name">Sri Lanka</span>
+            </div>
+            <span class="vs-badge">VS</span>
+            <div class="d-flex align-items-center gap-2">
+              <span class="team-name">West Indies</span>
+              <span class="team-flag">🏝️</span>
+            </div>
+          </div>
+          <div class="match-meta">
+            <span class="match-tag tag-upcoming"><i class="fas fa-clock fa-xs"></i> IN 2 DAYS</span>
+            <span style="font-size:.75rem;color:var(--muted)">Test Match</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ICC Rankings -->
+    <div class="col-12 col-lg-4 animate-in delay-3">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.9rem"><i class="fas fa-trophy" style="color:#fbbf24"></i> ODI Rankings</h3>
+        <div class="rank-row rank-table-head" style="padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+          <div style="width:30px">#</div>
+          <div style="flex:1">Country</div>
+          <div style="width:70px;text-align:right">Pts</div>
+          <div style="width:80px;text-align:right">Rating</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number gold">1</div>
+          <div class="rank-country"><span class="rank-flag">🇮🇳</span> India</div>
+          <div class="rank-points">5,432</div>
+          <div class="rank-rating">126</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number silver">2</div>
+          <div class="rank-country"><span class="rank-flag">🇦🇺</span> Australia</div>
+          <div class="rank-points">5,210</div>
+          <div class="rank-rating">121</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number bronze">3</div>
+          <div class="rank-country"><span class="rank-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> England</div>
+          <div class="rank-points">4,980</div>
+          <div class="rank-rating">118</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number">4</div>
+          <div class="rank-country"><span class="rank-flag">🇳🇿</span> New Zealand</div>
+          <div class="rank-points">4,750</div>
+          <div class="rank-rating">115</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number">5</div>
+          <div class="rank-country"><span class="rank-flag">🇵🇰</span> Pakistan</div>
+          <div class="rank-points">4,620</div>
+          <div class="rank-rating">112</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number">6</div>
+          <div class="rank-country"><span class="rank-flag">🇿🇦</span> South Africa</div>
+          <div class="rank-points">4,510</div>
+          <div class="rank-rating">110</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number">7</div>
+          <div class="rank-country"><span class="rank-flag">🇧🇩</span> Bangladesh</div>
+          <div class="rank-points">4,200</div>
+          <div class="rank-rating">106</div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-number">8</div>
+          <div class="rank-country"><span class="rank-flag">🇱🇰</span> Sri Lanka</div>
+          <div class="rank-points">4,100</div>
+          <div class="rank-rating">103</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="col-12 col-lg-4 animate-in delay-4">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.9rem"><i class="fas fa-bolt" style="color:var(--accent2)"></i> Recent Activity</h3>
+        <div class="activity-item">
+          <div class="activity-avatar icon-blue" style="background:rgba(0,212,255,.15)"><i class="fas fa-user-plus" style="color:var(--accent)"></i></div>
+          <div class="activity-info">
+            <div class="activity-title">New Player Registered</div>
+            <div class="activity-sub">Shubman Gill — India · Batsman</div>
+          </div>
+          <div class="activity-time">2m ago</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:rgba(251,146,60,.15)"><i class="fas fa-baseball-bat-ball" style="color:#fb923c"></i></div>
+          <div class="activity-info">
+            <div class="activity-title">Match Result Updated</div>
+            <div class="activity-sub">AUS def. SA · +34 runs</div>
+          </div>
+          <div class="activity-time">18m ago</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:rgba(168,85,247,.15)"><i class="fas fa-trophy" style="color:#a855f7"></i></div>
+          <div class="activity-info">
+            <div class="activity-title">Rankings Recalculated</div>
+            <div class="activity-sub">ODI standings updated globally</div>
+          </div>
+          <div class="activity-time">1h ago</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:rgba(0,255,148,.15)"><i class="fas fa-flag" style="color:#00ff94"></i></div>
+          <div class="activity-info">
+            <div class="activity-title">Country Data Synced</div>
+            <div class="activity-sub">Afghanistan roster updated</div>
+          </div>
+          <div class="activity-time">3h ago</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar" style="background:rgba(255,77,109,.15)"><i class="fas fa-calendar-plus" style="color:#ff4d6d"></i></div>
+          <div class="activity-info">
+            <div class="activity-title">Match Scheduled</div>
+            <div class="activity-sub">PAK vs NZ — T20I tomorrow</div>
+          </div>
+          <div class="activity-time">5h ago</div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-avatar icon-blue" style="background:rgba(0,212,255,.15)"><i class="fas fa-star" style="color:var(--accent)"></i></div>
+          <div class="activity-info">
+            <div class="activity-title">Player of the Month</div>
+            <div class="activity-sub">Virat Kohli — 342 runs in Apr</div>
+          </div>
+          <div class="activity-time">1d ago</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+
+  <!-- Footer -->
+  <div class="dashboard-footer">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project &nbsp;|&nbsp; All rights reserved.
+  </div>
+
+</main><!-- /main -->
+
+<!-- ═══════════════ SEARCH MODAL ═══════════════ -->
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <form action="search.html" method="GET">
+      <div class="search-input-wrap">
+        <i class="fas fa-search search-icon-abs"></i>
+        <input type="text" name="q" class="search-input" id="searchInput" placeholder="Search players, countries, matches…" autocomplete="off"/>
+      </div>
+    </form>
+    <div class="d-flex gap-2 flex-wrap">
+      <span class="search-tag" data-query="Players"><i class="fas fa-person-running fa-xs"></i> Players</span>
+      <span class="search-tag" data-query="Countries"><i class="fas fa-flag fa-xs"></i> Countries</span>
+      <span class="search-tag" data-query="Matches"><i class="fas fa-baseball-bat-ball fa-xs"></i> Matches</span>
+      <span class="search-tag" data-query="Rankings"><i class="fas fa-trophy fa-xs"></i> Rankings</span>
+    </div>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">
+      Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">Enter</kbd> to search &nbsp;|&nbsp; <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">ESC</kbd> to close
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

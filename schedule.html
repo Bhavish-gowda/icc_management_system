@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Match Schedule - ICC Cricket</title>
+<meta name="description" content="ICC Cricket Match Schedule and Upcoming Fixtures"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="pageLoader" class="page-loader"><div class="loader-spinner"></div></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+    <a href="index.html" class="navbar-brand"><div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div><span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span></a>
+  </div>
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom"><i class="fas fa-trophy"></i> Rankings</a>
+    <a href="schedule.html" class="nav-link-custom active"><i class="fas fa-calendar-days"></i> Schedule</a>
+  </div>
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
+    <button class="notification-btn" id="notifBtn" aria-label="Notifications"><i class="fas fa-bell fa-lg"></i><span class="notif-badge"></span></button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="matches.html" class="sidebar-link"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link"><i class="fas fa-trophy"></i> Rankings</a>
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="statistics.html" class="sidebar-link"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link active"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link"><i class="fas fa-medal"></i> Tournaments</a>
+  <span class="sidebar-section-title">Management</span>
+  <a href="teams.html" class="sidebar-link"><i class="fas fa-users"></i> Teams</a>
+  <a href="search.html" class="sidebar-link"><i class="fas fa-search"></i> Search</a>
+  <a href="about.html" class="sidebar-link"><i class="fas fa-info-circle"></i> About</a>
+  <div class="sidebar-footer"><a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a></div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 animate-in">
+    <div>
+      <h1 class="hero-title" style="font-size:1.8rem;margin-bottom:4px;">Match <span>Schedule</span></h1>
+      <p class="hero-subtitle mb-0">Upcoming fixtures, series calendar, and match timings across all formats.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <select class="form-select custom-input" id="scheduleFormat" style="width:auto;">
+        <option value="all">All Formats</option>
+        <option value="ODI">ODI</option>
+        <option value="T20I">T20I</option>
+        <option value="Test">Test</option>
+      </select>
+      <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addFixtureModal">
+        <i class="fas fa-plus"></i> Add Fixture
+      </button>
+    </div>
+  </div>
+
+  <!-- Month Banner -->
+  <div class="content-card animate-in delay-1 mb-4" style="background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(0,255,148,.04));border:1px solid rgba(0,212,255,.2);">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.4rem;">
+          <i class="fas fa-calendar-days" style="color:#0d1b2a"></i>
+        </div>
+        <div>
+          <div style="font-size:1.1rem;font-weight:800;">May — June 2025</div>
+          <div style="font-size:.8rem;color:var(--muted);">12 fixtures scheduled · 3 series active</div>
+        </div>
+      </div>
+      <div class="d-flex gap-3">
+        <div class="text-center"><div style="font-size:1.4rem;font-weight:800;color:#ff4d6d;">1</div><div style="font-size:.72rem;color:var(--muted)">Live Now</div></div>
+        <div class="text-center"><div style="font-size:1.4rem;font-weight:800;color:var(--accent);">5</div><div style="font-size:.72rem;color:var(--muted)">Upcoming</div></div>
+        <div class="text-center"><div style="font-size:1.4rem;font-weight:800;color:#00ff94;">6</div><div style="font-size:.72rem;color:var(--muted)">Completed</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE -->
+  <h2 class="section-title animate-in delay-1"><i class="fas fa-broadcast-tower" style="color:#ff4d6d"></i> Live Now</h2>
+  <div class="row g-3 mb-4 animate-in delay-1" id="liveFixtures">
+    <div class="col-12">
+      <div class="content-card" style="border-left:4px solid #ff4d6d;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;width:200px;height:100%;background:radial-gradient(ellipse at right,rgba(255,77,109,.07),transparent);pointer-events:none;"></div>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="match-badge badge-live">🔴 LIVE</span>
+                <span style="font-size:.75rem;color:var(--muted)">ODI · Eden Gardens, Kolkata</span>
+              </div>
+              <div style="font-size:1.1rem;font-weight:800;">🇮🇳 India <span style="color:var(--muted);font-size:.85rem;margin:0 10px;">vs</span> 🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</div>
+              <div style="font-size:.8rem;color:var(--accent);margin-top:4px;">India 287/4 (42.3 ov) — England yet to bat</div>
+            </div>
+          </div>
+          <div class="text-end">
+            <div style="font-size:.75rem;color:var(--muted)">Toss: India (Bat)</div>
+            <div style="font-size:.75rem;color:var(--muted)">May 10, 2025 · 09:30 UTC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPCOMING -->
+  <h2 class="section-title animate-in delay-2"><i class="fas fa-calendar-alt" style="color:var(--accent)"></i> Upcoming Fixtures</h2>
+  <div class="row g-3 mb-4 animate-in delay-2" id="upcomingFixtures">
+
+    <!-- Fixture Card Template -->
+    <div class="col-lg-6 fixture-item" data-format="T20I">
+      <div class="content-card" style="border-left:3px solid var(--accent);">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <div class="d-flex gap-2 mb-2">
+              <span class="match-badge badge-upcoming" style="background:rgba(0,212,255,.12);color:var(--accent);">T20I</span>
+              <span style="font-size:.75rem;color:var(--muted);padding-top:2px;"><i class="fas fa-map-marker-alt fa-xs"></i> Gaddafi Stadium, Lahore</span>
+            </div>
+            <div style="font-size:1rem;font-weight:700;">🇵🇰 Pakistan <span style="color:var(--muted);font-size:.85rem;margin:0 8px;">vs</span> 🇳🇿 New Zealand</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:4px;">2nd T20I · Pakistan vs NZ Series 2025</div>
+          </div>
+          <div class="text-end flex-shrink-0">
+            <div style="font-size:.85rem;font-weight:700;color:var(--accent);">Tomorrow</div>
+            <div style="font-size:.72rem;color:var(--muted)">May 11, 2025</div>
+            <div style="font-size:.72rem;color:var(--muted)">14:30 IST</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 fixture-item" data-format="Test">
+      <div class="content-card" style="border-left:3px solid #a855f7;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <div class="d-flex gap-2 mb-2">
+              <span class="match-badge" style="background:rgba(168,85,247,.15);color:#a855f7;">Test</span>
+              <span style="font-size:.75rem;color:var(--muted);padding-top:2px;"><i class="fas fa-map-marker-alt fa-xs"></i> Galle International Stadium</span>
+            </div>
+            <div style="font-size:1rem;font-weight:700;">🇱🇰 Sri Lanka <span style="color:var(--muted);font-size:.85rem;margin:0 8px;">vs</span> 🏝️ West Indies</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:4px;">1st Test · Sri Lanka vs West Indies 2025</div>
+          </div>
+          <div class="text-end flex-shrink-0">
+            <div style="font-size:.85rem;font-weight:700;color:#a855f7;">In 2 Days</div>
+            <div style="font-size:.72rem;color:var(--muted)">May 12, 2025</div>
+            <div style="font-size:.72rem;color:var(--muted)">09:30 IST</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 fixture-item" data-format="ODI">
+      <div class="content-card" style="border-left:3px solid #00ff94;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <div class="d-flex gap-2 mb-2">
+              <span class="match-badge" style="background:rgba(0,255,148,.12);color:#00ff94;">ODI</span>
+              <span style="font-size:.75rem;color:var(--muted);padding-top:2px;"><i class="fas fa-map-marker-alt fa-xs"></i> MCG, Melbourne</span>
+            </div>
+            <div style="font-size:1rem;font-weight:700;">🇦🇺 Australia <span style="color:var(--muted);font-size:.85rem;margin:0 8px;">vs</span> 🇿🇦 South Africa</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:4px;">3rd ODI · Aus vs SA Series 2025</div>
+          </div>
+          <div class="text-end flex-shrink-0">
+            <div style="font-size:.85rem;font-weight:700;color:#00ff94;">In 3 Days</div>
+            <div style="font-size:.72rem;color:var(--muted)">May 13, 2025</div>
+            <div style="font-size:.72rem;color:var(--muted)">10:00 IST</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 fixture-item" data-format="T20I">
+      <div class="content-card" style="border-left:3px solid var(--accent);">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <div class="d-flex gap-2 mb-2">
+              <span class="match-badge badge-upcoming" style="background:rgba(0,212,255,.12);color:var(--accent);">T20I</span>
+              <span style="font-size:.75rem;color:var(--muted);padding-top:2px;"><i class="fas fa-map-marker-alt fa-xs"></i> Wankhede Stadium, Mumbai</span>
+            </div>
+            <div style="font-size:1rem;font-weight:700;">🇮🇳 India <span style="color:var(--muted);font-size:.85rem;margin:0 8px;">vs</span> 🇧🇩 Bangladesh</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:4px;">1st T20I · India vs Bangladesh Series 2025</div>
+          </div>
+          <div class="text-end flex-shrink-0">
+            <div style="font-size:.85rem;font-weight:700;color:var(--accent);">In 5 Days</div>
+            <div style="font-size:.72rem;color:var(--muted)">May 15, 2025</div>
+            <div style="font-size:.72rem;color:var(--muted)">19:00 IST</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 fixture-item" data-format="ODI">
+      <div class="content-card" style="border-left:3px solid #00ff94;">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <div class="d-flex gap-2 mb-2">
+              <span class="match-badge" style="background:rgba(0,255,148,.12);color:#00ff94;">ODI</span>
+              <span style="font-size:.75rem;color:var(--muted);padding-top:2px;"><i class="fas fa-map-marker-alt fa-xs"></i> Lord's, London</span>
+            </div>
+            <div style="font-size:1rem;font-weight:700;">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England <span style="color:var(--muted);font-size:.85rem;margin:0 8px;">vs</span> 🇦🇫 Afghanistan</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:4px;">1st ODI · ENG vs AFG Series 2025</div>
+          </div>
+          <div class="text-end flex-shrink-0">
+            <div style="font-size:.85rem;font-weight:700;color:#00ff94;">May 18</div>
+            <div style="font-size:.72rem;color:var(--muted)">May 18, 2025</div>
+            <div style="font-size:.72rem;color:var(--muted)">14:00 IST</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RECENT RESULTS -->
+  <h2 class="section-title animate-in delay-3"><i class="fas fa-check-circle" style="color:#00ff94"></i> Recent Results</h2>
+  <div class="content-card p-0 overflow-hidden animate-in delay-3 mb-4">
+    <div class="recent-match-list">
+      <div class="recent-match-item">
+        <div class="date-col"><div class="fw-bold">10 May</div><div class="text-muted" style="font-size:0.75rem">ODI</div></div>
+        <div class="teams-col">
+          <div class="team-win"><span>🇦🇺</span> Australia <span class="score-sm ms-auto">312/6</span></div>
+          <div class="team-loss"><span>🇿🇦</span> S. Africa <span class="score-sm ms-auto">278/10</span></div>
+        </div>
+        <div class="result-col"><div class="result-badge win">AUS won by 34 runs</div></div>
+      </div>
+      <div class="recent-match-item">
+        <div class="date-col"><div class="fw-bold">08 May</div><div class="text-muted" style="font-size:0.75rem">T20I</div></div>
+        <div class="teams-col">
+          <div class="team-loss"><span>🇧🇩</span> Bangladesh <span class="score-sm ms-auto">142/8</span></div>
+          <div class="team-win"><span>🇦🇫</span> Afghanistan <span class="score-sm ms-auto">143/4</span></div>
+        </div>
+        <div class="result-col"><div class="result-badge win" style="color:#00d4ff;background:rgba(0,212,255,0.1)">AFG won by 6 wkts</div></div>
+      </div>
+      <div class="recent-match-item">
+        <div class="date-col"><div class="fw-bold">05 May</div><div class="text-muted" style="font-size:0.75rem">Test</div></div>
+        <div class="teams-col">
+          <div class="team-win"><span>🇮🇳</span> India <span class="score-sm ms-auto">450 &amp; 210/3</span></div>
+          <div class="team-loss"><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> England <span class="score-sm ms-auto">280 &amp; 320</span></div>
+        </div>
+        <div class="result-col"><div class="result-badge win">IND won by 7 wkts</div></div>
+      </div>
+      <div class="recent-match-item">
+        <div class="date-col"><div class="fw-bold">02 May</div><div class="text-muted" style="font-size:0.75rem">T20I</div></div>
+        <div class="teams-col">
+          <div class="team-win"><span>🇵🇰</span> Pakistan <span class="score-sm ms-auto">184/5</span></div>
+          <div class="team-loss"><span>🇳🇿</span> New Zealand <span class="score-sm ms-auto">171/8</span></div>
+        </div>
+        <div class="result-col"><div class="result-badge win" style="color:#a855f7;background:rgba(168,85,247,0.1)">PAK won by 13 runs</div></div>
+      </div>
+      <div class="recent-match-item">
+        <div class="date-col"><div class="fw-bold">28 Apr</div><div class="text-muted" style="font-size:0.75rem">ODI</div></div>
+        <div class="teams-col">
+          <div class="team-win"><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> England <span class="score-sm ms-auto">298/7</span></div>
+          <div class="team-loss"><span>🇱🇰</span> Sri Lanka <span class="score-sm ms-auto">245/10</span></div>
+        </div>
+        <div class="result-col"><div class="result-badge win">ENG won by 53 runs</div></div>
+      </div>
+      <div class="recent-match-item">
+        <div class="date-col"><div class="fw-bold">25 Apr</div><div class="text-muted" style="font-size:0.75rem">Test</div></div>
+        <div class="teams-col">
+          <div class="team-win"><span>🇦🇺</span> Australia <span class="score-sm ms-auto">375 &amp; 202</span></div>
+          <div class="team-loss"><span>🇿🇦</span> S. Africa <span class="score-sm ms-auto">210 &amp; 288</span></div>
+        </div>
+        <div class="result-col"><div class="result-badge win">AUS won by 79 runs</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-footer mt-5">&copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project</div>
+</main>
+
+<!-- ADD FIXTURE MODAL -->
+<div class="modal fade" id="addFixtureModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered custom-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-calendar-plus me-2 text-accent"></i>Schedule New Fixture</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addFixtureForm">
+          <div class="row g-3 mb-3">
+            <div class="col-md-5">
+              <label class="form-label">Team 1</label>
+              <select class="form-select custom-input" required>
+                <option value="">Select Team</option>
+                <option>India</option><option>Australia</option><option>England</option>
+                <option>Pakistan</option><option>New Zealand</option><option>South Africa</option>
+                <option>Sri Lanka</option><option>Bangladesh</option><option>West Indies</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end justify-content-center pb-2">
+              <span class="fw-bold" style="color:var(--accent);">VS</span>
+            </div>
+            <div class="col-md-5">
+              <label class="form-label">Team 2</label>
+              <select class="form-select custom-input" required>
+                <option value="">Select Team</option>
+                <option>India</option><option>Australia</option><option>England</option>
+                <option>Pakistan</option><option>New Zealand</option><option>South Africa</option>
+                <option>Sri Lanka</option><option>Bangladesh</option><option>West Indies</option>
+              </select>
+            </div>
+          </div>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Format</label>
+              <select class="form-select custom-input" required>
+                <option value="ODI">ODI</option>
+                <option value="T20I">T20I</option>
+                <option value="Test">Test Match</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control custom-input" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Venue</label>
+            <input type="text" class="form-control custom-input" placeholder="Stadium, City">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Match Time (IST)</label>
+            <input type="time" class="form-control custom-input">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary-custom" onclick="document.getElementById('addFixtureModal').querySelector('.btn-close').click(); showToast('Fixture scheduled successfully!', 'success');">Save Fixture</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <form action="search.html" method="GET">
+      <div class="search-input-wrap"><i class="fas fa-search search-icon-abs"></i><input type="text" name="q" class="search-input" id="searchInput" placeholder="Search players, countries, matches…" autocomplete="off"/></div>
+    </form>
+    <div class="d-flex gap-2 flex-wrap">
+      <span class="search-tag"><i class="fas fa-person-running fa-xs"></i> Players</span>
+      <span class="search-tag"><i class="fas fa-flag fa-xs"></i> Countries</span>
+      <span class="search-tag"><i class="fas fa-baseball-bat-ball fa-xs"></i> Matches</span>
+    </div>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">ESC</kbd> to close</div>
+  </div>
+</div>
+
+<script>
+  // Format filter for upcoming fixtures
+  document.getElementById('scheduleFormat').addEventListener('change', function() {
+    const val = this.value;
+    document.querySelectorAll('.fixture-item').forEach(el => {
+      if (val === 'all' || el.dataset.format === val) {
+        el.style.display = '';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body></html>

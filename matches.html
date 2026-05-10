@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ICC Matches & Rankings</title>
+<meta name="description" content="ICC Match Schedules and Rankings."/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ═══════════════ PAGE LOADER ═══════════════ -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
+  </div>
+
+  <!-- Desktop nav links -->
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom active" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+  </div>
+
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
+    <button class="notification-btn" id="notifBtn" aria-label="Notifications">
+      <i class="fas fa-bell fa-lg"></i>
+      <span class="notif-badge"></span>
+    </button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard </a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="matches.html" class="sidebar-link active" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-pie"></i> Statistics</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+
+  <span class="sidebar-section-title">Management</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-users-gear"></i> Teams</a>
+  <a href="search.html" class="sidebar-link open-search"><i class="fas fa-search"></i> Search</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-sliders"></i> Settings</a>
+
+  <div class="sidebar-footer">
+    <a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main class="main-content" id="mainContent">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 animate-in">
+    <div>
+        <h1 class="hero-title" style="font-size: 1.8rem; margin-bottom: 4px;">Matches & <span>Rankings</span></h1>
+        <p class="hero-subtitle mb-0">Live scores, schedules, historical results, and global standings.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn-outline-custom"><i class="fas fa-filter"></i> Filter</button>
+        <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addMatchModal">
+            <i class="fas fa-plus"></i> Schedule Match
+        </button>
+    </div>
+  </div>
+
+  <div class="row g-4">
+      <!-- Left Column: Matches -->
+      <div class="col-xl-8">
+          
+          <!-- Live Matches -->
+          <h2 class="section-title animate-in delay-1"><i class="fas fa-broadcast-tower" style="color:#ff4d6d"></i> Live Action</h2>
+          <div class="row g-3 mb-4 animate-in delay-1">
+              <div class="col-md-6">
+                  <div class="match-card-detailed live-game">
+                      <div class="match-header">
+                          <span class="match-badge badge-live">LIVE</span>
+                          <span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> Eden Gardens · ODI</span>
+                      </div>
+                      <div class="match-body">
+                          <div class="team-block"><span class="flag">🇮🇳</span><div class="team-stats"><div class="name">India</div><div class="score">287/4</div></div></div>
+                          <div class="vs-text">VS</div>
+                          <div class="team-block text-end flex-row-reverse"><span class="flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><div class="team-stats align-items-end"><div class="name">England</div><div class="score text-muted">Yet to bat</div></div></div>
+                      </div>
+                      <div class="match-footer"><div class="status-text text-accent">India elected to bat · 42.3 overs</div><button class="btn-icon"><i class="fas fa-chevron-right"></i></button></div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Upcoming Matches -->
+          <h2 class="section-title animate-in delay-2"><i class="fas fa-calendar-alt" style="color:var(--accent)"></i> Upcoming Fixtures</h2>
+          <div class="row g-3 mb-4 animate-in delay-2">
+              <div class="col-md-6">
+                  <div class="match-card-detailed">
+                      <div class="match-header"><span class="match-badge badge-upcoming">TOMORROW</span><span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> Gaddafi Stadium · T20I</span></div>
+                      <div class="match-body">
+                          <div class="team-block"><span class="flag">🇵🇰</span><div class="team-stats"><div class="name">Pakistan</div></div></div>
+                          <div class="vs-text">VS</div>
+                          <div class="team-block text-end flex-row-reverse"><span class="flag">🇳🇿</span><div class="team-stats align-items-end"><div class="name">New Zealand</div></div></div>
+                      </div>
+                      <div class="match-footer"><div class="status-text text-muted">Starts at 14:30 IST</div></div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="match-card-detailed">
+                      <div class="match-header"><span class="match-badge badge-upcoming" style="background:rgba(168,85,247,0.15);color:#a855f7;">IN 2 DAYS</span><span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> Galle · Test Match</span></div>
+                      <div class="match-body">
+                          <div class="team-block"><span class="flag">🇱🇰</span><div class="team-stats"><div class="name">Sri Lanka</div></div></div>
+                          <div class="vs-text">VS</div>
+                          <div class="team-block text-end flex-row-reverse"><span class="flag">🏝️</span><div class="team-stats align-items-end"><div class="name">West Indies</div></div></div>
+                      </div>
+                      <div class="match-footer"><div class="status-text text-muted">Day 1 starts at 09:30 IST</div></div>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Recent Results -->
+          <h2 class="section-title animate-in delay-3"><i class="fas fa-check-circle" style="color:#00ff94"></i> Recent Results</h2>
+          <div class="content-card p-0 overflow-hidden animate-in delay-3 mb-4 mb-xl-0">
+            <div class="recent-match-list">
+                <div class="recent-match-item">
+                    <div class="date-col"><div class="fw-bold">10 May</div><div class="text-muted" style="font-size:0.75rem">ODI</div></div>
+                    <div class="teams-col"><div class="team-win"><span>🇦🇺</span> Australia <span class="score-sm ms-auto">312/6</span></div><div class="team-loss"><span>🇿🇦</span> S. Africa <span class="score-sm ms-auto">278/10</span></div></div>
+                    <div class="result-col"><div class="result-badge win">AUS won by 34 runs</div></div>
+                </div>
+                <div class="recent-match-item">
+                    <div class="date-col"><div class="fw-bold">08 May</div><div class="text-muted" style="font-size:0.75rem">T20I</div></div>
+                    <div class="teams-col"><div class="team-loss"><span>🇧🇩</span> Bangladesh <span class="score-sm ms-auto">142/8</span></div><div class="team-win"><span>🇦🇫</span> Afghanistan <span class="score-sm ms-auto">143/4</span></div></div>
+                    <div class="result-col"><div class="result-badge win" style="color:#00d4ff;background:rgba(0,212,255,0.1)">AFG won by 6 wkts</div></div>
+                </div>
+                <div class="recent-match-item">
+                    <div class="date-col"><div class="fw-bold">05 May</div><div class="text-muted" style="font-size:0.75rem">Test</div></div>
+                    <div class="teams-col"><div class="team-win"><span>🇮🇳</span> India <span class="score-sm ms-auto">450 &amp; 210/3</span></div><div class="team-loss"><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> England <span class="score-sm ms-auto">280 &amp; 320</span></div></div>
+                    <div class="result-col"><div class="result-badge win">IND won by 7 wkts</div></div>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- Right Column: Rankings & Charts -->
+      <div class="col-xl-4">
+          <h2 class="section-title animate-in delay-2"><i class="fas fa-trophy" style="color:#fbbf24"></i> Global Rankings</h2>
+          
+          <div class="content-card p-0 mb-4 animate-in delay-2">
+              <div class="rankings-tabs d-flex border-bottom border-secondary">
+                  <div class="rank-tab active flex-fill text-center p-2" style="font-size: 0.85rem; font-weight: 600; cursor: pointer;">ODI</div>
+                  <div class="rank-tab flex-fill text-center p-2 text-muted" style="font-size: 0.85rem; font-weight: 600; cursor: pointer;">T20I</div>
+                  <div class="rank-tab flex-fill text-center p-2 text-muted" style="font-size: 0.85rem; font-weight: 600; cursor: pointer;">TEST</div>
+              </div>
+              <div class="p-3">
+                  <div class="rank-row rank-table-head" style="padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:4px;">
+                    <div style="width:30px">#</div>
+                    <div style="flex:1">Team</div>
+                    <div style="width:50px;text-align:right">Rtg</div>
+                    <div style="width:50px;text-align:right">Pts</div>
+                  </div>
+                  <div class="rank-row">
+                    <div class="rank-number gold">1</div>
+                    <div class="rank-country"><span class="rank-flag">🇮🇳</span> IND</div>
+                    <div class="rank-rating" style="width:50px;font-weight:700">126</div>
+                    <div class="rank-points" style="width:50px">5,432</div>
+                  </div>
+                  <div class="rank-row">
+                    <div class="rank-number silver">2</div>
+                    <div class="rank-country"><span class="rank-flag">🇦🇺</span> AUS</div>
+                    <div class="rank-rating" style="width:50px;font-weight:700">121</div>
+                    <div class="rank-points" style="width:50px;color:var(--muted)">5,210</div>
+                  </div>
+                  <div class="rank-row">
+                    <div class="rank-number bronze">3</div>
+                    <div class="rank-country"><span class="rank-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> ENG</div>
+                    <div class="rank-rating" style="width:50px;font-weight:700">118</div>
+                    <div class="rank-points" style="width:50px;color:var(--muted)">4,980</div>
+                  </div>
+                  <div class="rank-row">
+                    <div class="rank-number">4</div>
+                    <div class="rank-country"><span class="rank-flag">🇳🇿</span> NZ</div>
+                    <div class="rank-rating" style="width:50px;font-weight:700">115</div>
+                    <div class="rank-points" style="width:50px;color:var(--muted)">4,750</div>
+                  </div>
+                  <div class="rank-row">
+                    <div class="rank-number">5</div>
+                    <div class="rank-country"><span class="rank-flag">🇵🇰</span> PAK</div>
+                    <div class="rank-rating" style="width:50px;font-weight:700">112</div>
+                    <div class="rank-points" style="width:50px;color:var(--muted)">4,620</div>
+                  </div>
+                  <div class="text-center mt-3">
+                      <a href="#" style="color:var(--accent); text-decoration:none; font-size: 0.8rem; font-weight: 600;">View Full Table <i class="fas fa-arrow-right ms-1"></i></a>
+                  </div>
+              </div>
+          </div>
+
+          <h2 class="section-title animate-in delay-3"><i class="fas fa-chart-pie" style="color:var(--accent2)"></i> Statistics</h2>
+          <div class="content-card animate-in delay-3 d-flex flex-column align-items-center justify-content-center" style="min-height: 250px;">
+              <div class="chart-placeholder d-flex align-items-center justify-content-center flex-column gap-3 w-100 h-100" style="background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed var(--border);">
+                  <div style="font-size: 3rem; color: var(--border);"><i class="fas fa-chart-bar"></i></div>
+                  <div class="text-muted" style="font-size: 0.85rem;">Win/Loss Ratio Chart</div>
+                  <div class="progress w-75" style="height: 6px; background: rgba(255,255,255,0.1);">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-danger" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dashboard-footer mt-5">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project &nbsp;|&nbsp; All rights reserved.
+  </div>
+
+</main><!-- /main -->
+
+<!-- ═══════════════ ADD MATCH MODAL ═══════════════ -->
+<div class="modal fade" id="addMatchModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered custom-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-calendar-plus me-2 text-accent"></i>Schedule Match</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row g-3 mb-3">
+              <div class="col-md-5">
+                  <label class="form-label">Team 1</label>
+                  <select class="form-select custom-input" required>
+                      <option value="">Select Team</option>
+                      <option>India</option>
+                      <option>Australia</option>
+                      <option>England</option>
+                  </select>
+              </div>
+              <div class="col-md-2 d-flex align-items-end justify-content-center pb-2">
+                  <span class="fw-bold" style="color:var(--accent);">VS</span>
+              </div>
+              <div class="col-md-5">
+                  <label class="form-label">Team 2</label>
+                  <select class="form-select custom-input" required>
+                      <option value="">Select Team</option>
+                      <option>India</option>
+                      <option>Australia</option>
+                      <option>England</option>
+                  </select>
+              </div>
+          </div>
+          <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                  <label class="form-label">Format</label>
+                  <select class="form-select custom-input" required>
+                    <option value="ODI">ODI</option>
+                    <option value="T20I">T20I</option>
+                    <option value="Test">Test Match</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                  <label class="form-label">Date</label>
+                  <input type="date" class="form-control custom-input" required>
+              </div>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Venue</label>
+              <input type="text" class="form-control custom-input" placeholder="Stadium, City">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary-custom" onclick="document.getElementById('addMatchModal').querySelector('.btn-close').click();">Save Schedule</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

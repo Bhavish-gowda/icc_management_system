@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tournaments - ICC Cricket</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="pageLoader" class="page-loader"><div class="loader-spinner"></div></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0" style="color:var(--muted);font-size:1.2rem;"><i class="fas fa-bars"></i></button>
+    <a href="index.html" class="navbar-brand"><div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div><span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span></a>
+  </div>
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="matches.html" class="nav-link-custom"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom"><i class="fas fa-trophy"></i> Rankings</a>
+    <a href="tournaments.html" class="nav-link-custom active"><i class="fas fa-medal"></i> Tournaments</a>
+  </div>
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav"><a href="search.html" style="color:inherit;text-decoration:none;"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span></a></button>
+    <button class="notification-btn" id="notifBtn"><i class="fas fa-bell fa-lg"></i><span class="notif-badge"></span></button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="teams.html" class="sidebar-link"><i class="fas fa-users"></i> Teams</a>
+  <a href="matches.html" class="sidebar-link"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link"><i class="fas fa-trophy"></i> Rankings</a>
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="statistics.html" class="sidebar-link"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link active"><i class="fas fa-medal"></i> Tournaments</a>
+  <span class="sidebar-section-title">More</span>
+  <a href="search.html" class="sidebar-link"><i class="fas fa-search"></i> Search</a>
+  <a href="about.html" class="sidebar-link"><i class="fas fa-info-circle"></i> About</a>
+  <div class="sidebar-footer"><a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a></div>
+</aside>
+<main class="main-content" id="mainContent">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 animate-in">
+    <div>
+      <h1 class="hero-title" style="font-size:1.8rem;margin-bottom:4px;">ICC <span>Tournaments</span></h1>
+      <p class="hero-subtitle mb-0">Major ICC events, past champions, and upcoming tournaments.</p>
+    </div>
+  </div>
+
+  <!-- Featured Tournaments -->
+  <h2 class="section-title animate-in delay-1"><i class="fas fa-star" style="color:#fbbf24"></i> Major ICC Events</h2>
+  <div class="row g-4 mb-4 animate-in delay-1">
+    <div class="col-md-6 col-xl-4">
+      <div class="content-card" style="background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(0,212,255,.05));border-color:rgba(251,191,36,.3);text-align:center;">
+        <div style="font-size:3rem;margin-bottom:.5rem;">🏆</div>
+        <h4 style="font-weight:800;color:#fbbf24;">ICC Cricket World Cup</h4>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;">ODI Format · Every 4 Years</div>
+        <div class="d-flex justify-content-center gap-4 mb-3">
+          <div><div style="font-size:1.2rem;font-weight:800;color:var(--accent)">14</div><div style="font-size:.72rem;color:var(--muted)">Editions</div></div>
+          <div><div style="font-size:1.2rem;font-weight:800;color:#00ff94">16</div><div style="font-size:.72rem;color:var(--muted)">Teams</div></div>
+          <div><div style="font-size:1.2rem;font-weight:800;color:#fbbf24">5x</div><div style="font-size:.72rem;color:var(--muted)">AUS Wins</div></div>
+        </div>
+        <div style="background:rgba(251,191,36,.1);border-radius:8px;padding:.5rem .75rem;font-size:.8rem;">
+          <strong>Last Winner:</strong> 🇦🇺 Australia (2023)
+        </div>
+        <div style="margin-top:.75rem;font-size:.78rem;color:var(--accent);">Next: 2027 · South Africa</div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="content-card" style="background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(168,85,247,.05));border-color:rgba(0,212,255,.3);text-align:center;">
+        <div style="font-size:3rem;margin-bottom:.5rem;">⚡</div>
+        <h4 style="font-weight:800;color:var(--accent);">ICC T20 World Cup</h4>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;">T20I Format · Every 2 Years</div>
+        <div class="d-flex justify-content-center gap-4 mb-3">
+          <div><div style="font-size:1.2rem;font-weight:800;color:var(--accent)">9</div><div style="font-size:.72rem;color:var(--muted)">Editions</div></div>
+          <div><div style="font-size:1.2rem;font-weight:800;color:#00ff94">20</div><div style="font-size:.72rem;color:var(--muted)">Teams</div></div>
+          <div><div style="font-size:1.2rem;font-weight:800;color:#fbbf24">2x</div><div style="font-size:.72rem;color:var(--muted)">IND Wins</div></div>
+        </div>
+        <div style="background:rgba(0,212,255,.1);border-radius:8px;padding:.5rem .75rem;font-size:.8rem;">
+          <strong>Last Winner:</strong> 🇮🇳 India (2024)
+        </div>
+        <div style="margin-top:.75rem;font-size:.78rem;color:var(--accent);">Next: 2026 · India & Sri Lanka</div>
+      </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+      <div class="content-card" style="background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(251,146,60,.05));border-color:rgba(168,85,247,.3);text-align:center;">
+        <div style="font-size:3rem;margin-bottom:.5rem;">🛡️</div>
+        <h4 style="font-weight:800;color:#a855f7;">ICC World Test Championship</h4>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem;">Test Format · 2-Year Cycle</div>
+        <div class="d-flex justify-content-center gap-4 mb-3">
+          <div><div style="font-size:1.2rem;font-weight:800;color:var(--accent)">3</div><div style="font-size:.72rem;color:var(--muted)">Finals</div></div>
+          <div><div style="font-size:1.2rem;font-weight:800;color:#00ff94">9</div><div style="font-size:.72rem;color:var(--muted)">Teams</div></div>
+          <div><div style="font-size:1.2rem;font-weight:800;color:#fbbf24">2x</div><div style="font-size:.72rem;color:var(--muted)">AUS Wins</div></div>
+        </div>
+        <div style="background:rgba(168,85,247,.1);border-radius:8px;padding:.5rem .75rem;font-size:.8rem;">
+          <strong>Last Winner:</strong> 🇦🇺 Australia (2023)
+        </div>
+        <div style="margin-top:.75rem;font-size:.78rem;color:#a855f7;">Current Cycle: 2023–2025</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trophy Timeline -->
+  <h2 class="section-title animate-in delay-2"><i class="fas fa-timeline" style="color:var(--accent)"></i> World Cup Winners Timeline</h2>
+  <div class="content-card animate-in delay-2">
+    <div style="overflow-x:auto;">
+      <div class="d-flex gap-0" style="min-width:600px;position:relative;padding-bottom:1rem;">
+        <!-- Timeline bar -->
+        <div style="position:absolute;top:22px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:.3;"></div>
+        <!-- Entries -->
+        <div class="timeline-entry text-center flex-fill px-2">
+          <div style="width:16px;height:16px;background:#fbbf24;border-radius:50%;margin:14px auto 8px;position:relative;z-index:1;box-shadow:0 0 8px rgba(251,191,36,.6)"></div>
+          <div style="font-size:.78rem;font-weight:700">2011</div>
+          <div style="font-size:1.2rem">🇮🇳</div>
+          <div style="font-size:.68rem;color:var(--muted)">India</div>
+        </div>
+        <div class="timeline-entry text-center flex-fill px-2">
+          <div style="width:16px;height:16px;background:var(--accent);border-radius:50%;margin:14px auto 8px;position:relative;z-index:1;box-shadow:0 0 8px rgba(0,212,255,.6)"></div>
+          <div style="font-size:.78rem;font-weight:700">2015</div>
+          <div style="font-size:1.2rem">🇦🇺</div>
+          <div style="font-size:.68rem;color:var(--muted)">Australia</div>
+        </div>
+        <div class="timeline-entry text-center flex-fill px-2">
+          <div style="width:16px;height:16px;background:#00ff94;border-radius:50%;margin:14px auto 8px;position:relative;z-index:1;box-shadow:0 0 8px rgba(0,255,148,.6)"></div>
+          <div style="font-size:.78rem;font-weight:700">2019</div>
+          <div style="font-size:1.2rem">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+          <div style="font-size:.68rem;color:var(--muted)">England</div>
+        </div>
+        <div class="timeline-entry text-center flex-fill px-2">
+          <div style="width:16px;height:16px;background:#fbbf24;border-radius:50%;margin:14px auto 8px;position:relative;z-index:1;box-shadow:0 0 8px rgba(251,191,36,.6)"></div>
+          <div style="font-size:.78rem;font-weight:700">2023</div>
+          <div style="font-size:1.2rem">🇦🇺</div>
+          <div style="font-size:.68rem;color:var(--muted)">Australia</div>
+        </div>
+        <div class="timeline-entry text-center flex-fill px-2">
+          <div style="width:16px;height:16px;background:#a855f7;border-radius:50%;margin:14px auto 8px;position:relative;z-index:1;box-shadow:0 0 8px rgba(168,85,247,.6)"></div>
+          <div style="font-size:.78rem;font-weight:700">2027</div>
+          <div style="font-size:1.2rem">❓</div>
+          <div style="font-size:.68rem;color:var(--muted)">South Africa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-footer mt-5">&copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project</div>
+</main>
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <form action="search.html" method="GET">
+      <div class="search-input-wrap"><i class="fas fa-search search-icon-abs"></i><input type="text" name="q" class="search-input" id="searchInput" placeholder="Search…" autocomplete="off"/></div>
+    </form>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px">ESC</kbd> to close</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body></html>

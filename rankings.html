@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ICC Global Rankings</title>
+<meta name="description" content="ICC Global Cricket Rankings."/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ═══════════════ PAGE LOADER ═══════════════ -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
+  </div>
+
+  <!-- Desktop nav links -->
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom active" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+  </div>
+
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
+    <button class="notification-btn" id="notifBtn" aria-label="Notifications">
+      <i class="fas fa-bell fa-lg"></i>
+      <span class="notif-badge"></span>
+    </button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard </a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link active" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-pie"></i> Statistics</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+
+  <span class="sidebar-section-title">Management</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-users-gear"></i> Teams</a>
+  <a href="search.html" class="sidebar-link open-search"><i class="fas fa-search"></i> Search</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-sliders"></i> Settings</a>
+
+  <div class="sidebar-footer">
+    <a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main class="main-content" id="mainContent">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 animate-in">
+    <div>
+        <h1 class="hero-title" style="font-size: 1.8rem; margin-bottom: 4px;">Global <span>Rankings</span></h1>
+        <p class="hero-subtitle mb-0">Official ICC Men's Team Rankings across all formats.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn-outline-custom"><i class="fas fa-download"></i> Export PDF</button>
+        <button class="btn-primary-custom" onclick="showToast('Rankings recalculated successfully!', 'success');">
+            <i class="fas fa-sync-alt"></i> Update Rankings
+        </button>
+    </div>
+  </div>
+
+  <div class="content-card animate-in delay-1">
+      <ul class="nav nav-tabs custom-tabs mb-4" id="rankingsTab" role="tablist">
+          <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="odi-tab" data-bs-toggle="tab" data-bs-target="#odi" type="button" role="tab">ODI Rankings</button>
+          </li>
+          <li class="nav-item" role="presentation">
+              <button class="nav-link" id="t20-tab" data-bs-toggle="tab" data-bs-target="#t20" type="button" role="tab">T20I Rankings</button>
+          </li>
+          <li class="nav-item" role="presentation">
+              <button class="nav-link" id="test-tab" data-bs-toggle="tab" data-bs-target="#test" type="button" role="tab">Test Rankings</button>
+          </li>
+      </ul>
+
+      <div class="tab-content" id="rankingsTabContent">
+          <!-- ODI Tab -->
+          <div class="tab-pane fade show active" id="odi" role="tabpanel">
+              <div class="table-responsive">
+                  <table class="table custom-table">
+                      <thead>
+                          <tr>
+                              <th style="width: 80px;">Rank</th>
+                              <th>Team</th>
+                              <th class="text-end">Matches</th>
+                              <th class="text-end">Points</th>
+                              <th class="text-end">Rating</th>
+                          </tr>
+                      </thead>
+                      <tbody id="odiRankingsBody">
+                          <tr class="animate-row"><td><span class="badge-rank gold">1</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇮🇳</span><span class="fw-bold">India</span></div></td><td class="text-end">58</td><td class="text-end">7,321</td><td class="text-end fw-bold text-accent">126</td></tr>
+                          <tr class="animate-row" style="animation-delay:.1s"><td><span class="badge-rank silver">2</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇦🇺</span><span class="fw-bold">Australia</span></div></td><td class="text-end">45</td><td class="text-end">5,432</td><td class="text-end fw-bold text-accent">121</td></tr>
+                          <tr class="animate-row" style="animation-delay:.2s"><td><span class="badge-rank bronze">3</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><span class="fw-bold">England</span></div></td><td class="text-end">42</td><td class="text-end">4,950</td><td class="text-end fw-bold text-accent">118</td></tr>
+                          <tr class="animate-row" style="animation-delay:.3s"><td><span class="badge-rank">4</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇳🇿</span><span class="fw-bold">New Zealand</span></div></td><td class="text-end">40</td><td class="text-end">4,600</td><td class="text-end fw-bold text-accent">115</td></tr>
+                          <tr class="animate-row" style="animation-delay:.4s"><td><span class="badge-rank">5</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇵🇰</span><span class="fw-bold">Pakistan</span></div></td><td class="text-end">38</td><td class="text-end">4,250</td><td class="text-end fw-bold text-accent">112</td></tr>
+                          <tr class="animate-row" style="animation-delay:.5s"><td><span class="badge-rank">6</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇿🇦</span><span class="fw-bold">South Africa</span></div></td><td class="text-end">30</td><td class="text-end">3,050</td><td class="text-end fw-bold text-accent">102</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+          <div class="tab-pane fade" id="t20" role="tabpanel">
+              <div class="table-responsive">
+                  <table class="table custom-table">
+                      <thead><tr><th style="width: 80px;">Rank</th><th>Team</th><th class="text-end">Matches</th><th class="text-end">Points</th><th class="text-end">Rating</th></tr></thead>
+                      <tbody id="t20RankingsBody">
+                          <tr class="animate-row"><td><span class="badge-rank gold">1</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇮🇳</span><span class="fw-bold">India</span></div></td><td class="text-end">47</td><td class="text-end">5,810</td><td class="text-end fw-bold text-accent">269</td></tr>
+                          <tr class="animate-row" style="animation-delay:.1s"><td><span class="badge-rank silver">2</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇴🇲</span><span class="fw-bold">South Africa</span></div></td><td class="text-end">28</td><td class="text-end">3,612</td><td class="text-end fw-bold text-accent">267</td></tr>
+                          <tr class="animate-row" style="animation-delay:.2s"><td><span class="badge-rank bronze">3</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇦🇺</span><span class="fw-bold">Australia</span></div></td><td class="text-end">36</td><td class="text-end">4,050</td><td class="text-end fw-bold text-accent">259</td></tr>
+                          <tr class="animate-row" style="animation-delay:.3s"><td><span class="badge-rank">4</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇳🇿</span><span class="fw-bold">New Zealand</span></div></td><td class="text-end">30</td><td class="text-end">3,200</td><td class="text-end fw-bold text-accent">251</td></tr>
+                          <tr class="animate-row" style="animation-delay:.4s"><td><span class="badge-rank">5</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇵🇰</span><span class="fw-bold">Pakistan</span></div></td><td class="text-end">35</td><td class="text-end">3,100</td><td class="text-end fw-bold text-accent">247</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+          <div class="tab-pane fade" id="test" role="tabpanel">
+              <div class="table-responsive">
+                  <table class="table custom-table">
+                      <thead><tr><th style="width: 80px;">Rank</th><th>Team</th><th class="text-end">Matches</th><th class="text-end">Points</th><th class="text-end">Rating</th></tr></thead>
+                      <tbody id="testRankingsBody">
+                          <tr class="animate-row"><td><span class="badge-rank gold">1</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇦🇺</span><span class="fw-bold">Australia</span></div></td><td class="text-end">36</td><td class="text-end">4,604</td><td class="text-end fw-bold text-accent">128</td></tr>
+                          <tr class="animate-row" style="animation-delay:.1s"><td><span class="badge-rank silver">2</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇿🇦</span><span class="fw-bold">South Africa</span></div></td><td class="text-end">31</td><td class="text-end">3,581</td><td class="text-end fw-bold text-accent">116</td></tr>
+                          <tr class="animate-row" style="animation-delay:.2s"><td><span class="badge-rank bronze">3</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><span class="fw-bold">England</span></div></td><td class="text-end">37</td><td class="text-end">3,920</td><td class="text-end fw-bold text-accent">106</td></tr>
+                          <tr class="animate-row" style="animation-delay:.3s"><td><span class="badge-rank">4</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇮🇳</span><span class="fw-bold">India</span></div></td><td class="text-end">26</td><td class="text-end">2,700</td><td class="text-end fw-bold text-accent">104</td></tr>
+                          <tr class="animate-row" style="animation-delay:.4s"><td><span class="badge-rank">5</span></td><td><div class="d-flex align-items-center gap-2"><span class="team-flag">🇳🇿</span><span class="fw-bold">New Zealand</span></div></td><td class="text-end">22</td><td class="text-end">2,000</td><td class="text-end fw-bold text-accent">96</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dashboard-footer mt-5">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project &nbsp;|&nbsp; All rights reserved.
+  </div>
+
+</main><!-- /main -->
+
+<!-- ═══════════════ SEARCH MODAL ═══════════════ -->
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <form id="globalSearchForm" action="search.html" method="GET">
+        <div class="search-input-wrap">
+          <i class="fas fa-search search-icon-abs"></i>
+          <input type="text" name="q" class="search-input" id="searchInput" placeholder="Search players, countries, matches…" autocomplete="off"/>
+        </div>
+    </form>
+    <div class="d-flex gap-2 flex-wrap">
+      <span class="search-tag"><i class="fas fa-person-running fa-xs"></i> Players</span>
+      <span class="search-tag"><i class="fas fa-flag fa-xs"></i> Countries</span>
+      <span class="search-tag"><i class="fas fa-baseball-bat-ball fa-xs"></i> Matches</span>
+    </div>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">
+      Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">Enter</kbd> to search or <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">ESC</kbd> to close
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

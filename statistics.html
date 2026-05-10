@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Statistics - ICC Cricket</title>
+<meta name="description" content="ICC Cricket Performance Statistics and Analytics"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="pageLoader" class="page-loader"><div class="loader-spinner"></div></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0" style="color:var(--muted);font-size:1.2rem;"><i class="fas fa-bars"></i></button>
+    <a href="index.html" class="navbar-brand"><div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div><span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span></a>
+  </div>
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom"><i class="fas fa-trophy"></i> Rankings</a>
+    <a href="statistics.html" class="nav-link-custom active"><i class="fas fa-chart-bar"></i> Stats</a>
+  </div>
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav"><a href="search.html" style="color:inherit;text-decoration:none;"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span></a></button>
+    <button class="notification-btn" id="notifBtn"><i class="fas fa-bell fa-lg"></i><span class="notif-badge"></span></button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="teams.html" class="sidebar-link"><i class="fas fa-users"></i> Teams</a>
+  <a href="matches.html" class="sidebar-link"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link"><i class="fas fa-trophy"></i> Rankings</a>
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="statistics.html" class="sidebar-link active"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link"><i class="fas fa-medal"></i> Tournaments</a>
+  <span class="sidebar-section-title">More</span>
+  <a href="search.html" class="sidebar-link"><i class="fas fa-search"></i> Search</a>
+  <a href="about.html" class="sidebar-link"><i class="fas fa-info-circle"></i> About</a>
+  <div class="sidebar-footer"><a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a></div>
+</aside>
+
+<main class="main-content" id="mainContent">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 animate-in">
+    <div>
+      <h1 class="hero-title" style="font-size:1.8rem;margin-bottom:4px;">Performance <span>Analytics</span></h1>
+      <p class="hero-subtitle mb-0">Team statistics, batting & bowling analysis across all formats.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <select class="form-select custom-input" style="width:auto;" id="formatFilter">
+        <option value="all">All Formats</option><option value="odi">ODI</option><option value="t20">T20I</option><option value="test">Test</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Stat Summary Cards -->
+  <div class="row g-3 mb-4 animate-in delay-1">
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-blue"><i class="fas fa-cricket-bat-ball"></i></div><div class="stat-trend"><i class="fas fa-arrow-up fa-xs"></i> +4.2%</div></div>
+        <div class="stat-value"><span class="count-up" data-target="48291" data-suffix="">0</span></div>
+        <div class="stat-label">Total Runs (Season)</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="76"></div></div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-green"><i class="fas fa-fire"></i></div><div class="stat-trend"><i class="fas fa-arrow-up fa-xs"></i> +12</div></div>
+        <div class="stat-value"><span class="count-up" data-target="1842" data-suffix="">0</span></div>
+        <div class="stat-label">Wickets Taken</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="62"></div></div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-purple"><i class="fas fa-star"></i></div><div class="stat-trend"><i class="fas fa-arrow-up fa-xs"></i> 2 new</div></div>
+        <div class="stat-value"><span class="count-up" data-target="47" data-suffix="">0</span></div>
+        <div class="stat-label">Centuries Scored</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="48"></div></div>
+      </div>
+    </div>
+    <div class="col-6 col-lg-3">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-orange"><i class="fas fa-percent"></i></div><div class="stat-trend up"><i class="fas fa-arrow-up fa-xs"></i> +3%</div></div>
+        <div class="stat-value"><span class="count-up" data-target="58" data-suffix="%">0</span></div>
+        <div class="stat-label">Avg Win Rate</div>
+        <div class="stat-progress"><div class="stat-progress-bar" data-width="58"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="row g-4 mb-4 animate-in delay-2">
+    <div class="col-lg-8">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.95rem"><i class="fas fa-chart-line" style="color:var(--accent)"></i> Runs Per Match (Season Trend)</h3>
+        <div class="chart-placeholder" style="height:240px;background:rgba(0,0,0,0.2);border-radius:12px;border:1px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+          <i class="fas fa-chart-line" style="font-size:2.5rem;color:var(--border)"></i>
+          <div class="text-muted" style="font-size:.85rem">Interactive Chart — Backend Integration Required</div>
+          <!-- Simulated bar chart -->
+          <div class="d-flex align-items-end gap-2" style="height:100px;padding:0 1rem;">
+            <div style="width:28px;background:linear-gradient(0deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;height:60%;opacity:.8"></div>
+            <div style="width:28px;background:linear-gradient(0deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;height:80%;opacity:.8"></div>
+            <div style="width:28px;background:linear-gradient(0deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;height:55%;opacity:.8"></div>
+            <div style="width:28px;background:linear-gradient(0deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;height:90%;opacity:.8"></div>
+            <div style="width:28px;background:linear-gradient(0deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;height:70%;opacity:.8"></div>
+            <div style="width:28px;background:linear-gradient(0deg,#ff4d6d,#ff8c94);border-radius:4px 4px 0 0;height:100%;opacity:.9"></div>
+            <div style="width:28px;background:linear-gradient(0deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;height:75%;opacity:.8"></div>
+          </div>
+          <div class="d-flex gap-3" style="font-size:.72rem;color:var(--muted)">
+            <span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.95rem"><i class="fas fa-chart-pie" style="color:#a855f7"></i> Format Distribution</h3>
+        <div style="height:240px;display:flex;flex-direction:column;gap:14px;justify-content:center">
+          <div>
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;font-weight:600">ODI</span><span style="font-size:.82rem;color:var(--accent)">42%</span></div>
+            <div class="stat-progress"><div class="stat-progress-bar" data-width="42" style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></div></div>
+          </div>
+          <div>
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;font-weight:600">T20I</span><span style="font-size:.82rem;color:#a855f7">38%</span></div>
+            <div class="stat-progress"><div class="stat-progress-bar" data-width="38" style="background:linear-gradient(90deg,#a855f7,#c084fc)"></div></div>
+          </div>
+          <div>
+            <div class="d-flex justify-content-between mb-1"><span style="font-size:.82rem;font-weight:600">Test</span><span style="font-size:.82rem;color:#fb923c">20%</span></div>
+            <div class="stat-progress"><div class="stat-progress-bar" data-width="20" style="background:linear-gradient(90deg,#fb923c,#fdba74)"></div></div>
+          </div>
+          <div class="d-flex gap-3 mt-3">
+            <span style="font-size:.75rem;color:var(--muted)"><span style="color:var(--accent)">●</span> ODI</span>
+            <span style="font-size:.75rem;color:var(--muted)"><span style="color:#a855f7">●</span> T20I</span>
+            <span style="font-size:.75rem;color:var(--muted)"><span style="color:#fb923c">●</span> Test</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Performers -->
+  <div class="row g-4 animate-in delay-3">
+    <div class="col-lg-6">
+      <h2 class="section-title"><i class="fas fa-cricket-bat-ball" style="color:var(--accent)"></i> Top Batsmen</h2>
+      <div class="content-card p-0 overflow-hidden">
+        <table class="table custom-table mb-0">
+          <thead><tr><th>#</th><th>Player</th><th class="text-end">Runs</th><th class="text-end">Avg</th><th class="text-end">100s</th></tr></thead>
+          <tbody>
+            <tr class="animate-row"><td><span class="badge-rank gold">1</span></td><td><div class="d-flex align-items-center gap-2"><span>🇮🇳</span><span class="fw-bold">Virat Kohli</span></div></td><td class="text-end text-accent fw-bold">13,848</td><td class="text-end">58.7</td><td class="text-end">80</td></tr>
+            <tr class="animate-row" style="animation-delay:.1s"><td><span class="badge-rank silver">2</span></td><td><div class="d-flex align-items-center gap-2"><span>🇮🇳</span><span class="fw-bold">Rohit Sharma</span></div></td><td class="text-end text-accent fw-bold">10,709</td><td class="text-end">48.9</td><td class="text-end">29</td></tr>
+            <tr class="animate-row" style="animation-delay:.2s"><td><span class="badge-rank bronze">3</span></td><td><div class="d-flex align-items-center gap-2"><span>🇵🇰</span><span class="fw-bold">Babar Azam</span></div></td><td class="text-end text-accent fw-bold">5,729</td><td class="text-end">56.4</td><td class="text-end">19</td></tr>
+            <tr class="animate-row" style="animation-delay:.3s"><td><span class="badge-rank">4</span></td><td><div class="d-flex align-items-center gap-2"><span>🇦🇺</span><span class="fw-bold">Steve Smith</span></div></td><td class="text-end fw-bold">5,356</td><td class="text-end">43.1</td><td class="text-end">11</td></tr>
+            <tr class="animate-row" style="animation-delay:.4s"><td><span class="badge-rank">5</span></td><td><div class="d-flex align-items-center gap-2"><span>🇳🇿</span><span class="fw-bold">Kane Williamson</span></div></td><td class="text-end fw-bold">6,810</td><td class="text-end">47.2</td><td class="text-end">13</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <h2 class="section-title"><i class="fas fa-fire" style="color:#ff4d6d"></i> Top Bowlers</h2>
+      <div class="content-card p-0 overflow-hidden">
+        <table class="table custom-table mb-0">
+          <thead><tr><th>#</th><th>Player</th><th class="text-end">Wkts</th><th class="text-end">Econ</th><th class="text-end">Best</th></tr></thead>
+          <tbody>
+            <tr class="animate-row"><td><span class="badge-rank gold">1</span></td><td><div class="d-flex align-items-center gap-2"><span>🇮🇳</span><span class="fw-bold">Jasprit Bumrah</span></div></td><td class="text-end" style="color:#ff4d6d;font-weight:700">149</td><td class="text-end">4.51</td><td class="text-end">6/19</td></tr>
+            <tr class="animate-row" style="animation-delay:.1s"><td><span class="badge-rank silver">2</span></td><td><div class="d-flex align-items-center gap-2"><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><span class="fw-bold">Ben Stokes</span></div></td><td class="text-end" style="color:#ff4d6d;font-weight:700">97</td><td class="text-end">5.42</td><td class="text-end">4/33</td></tr>
+            <tr class="animate-row" style="animation-delay:.2s"><td><span class="badge-rank bronze">3</span></td><td><div class="d-flex align-items-center gap-2"><span>🇦🇺</span><span class="fw-bold">Pat Cummins</span></div></td><td class="text-end" style="color:#ff4d6d;font-weight:700">212</td><td class="text-end">4.79</td><td class="text-end">5/28</td></tr>
+            <tr class="animate-row" style="animation-delay:.3s"><td><span class="badge-rank">4</span></td><td><div class="d-flex align-items-center gap-2"><span>🇵🇰</span><span class="fw-bold">Shaheen Afridi</span></div></td><td class="text-end fw-bold">141</td><td class="text-end">4.95</td><td class="text-end">6/35</td></tr>
+            <tr class="animate-row" style="animation-delay:.4s"><td><span class="badge-rank">5</span></td><td><div class="d-flex align-items-center gap-2"><span>🇳🇿</span><span class="fw-bold">Trent Boult</span></div></td><td class="text-end fw-bold">183</td><td class="text-end">4.88</td><td class="text-end">5/21</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-footer mt-5">&copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project</div>
+</main>
+
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <form action="search.html" method="GET">
+      <div class="search-input-wrap"><i class="fas fa-search search-icon-abs"></i><input type="text" name="q" class="search-input" id="searchInput" placeholder="Search players, countries, matches…" autocomplete="off"/></div>
+    </form>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px">ESC</kbd> to close</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body></html>

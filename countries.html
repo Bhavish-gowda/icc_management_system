@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ICC Countries Management</title>
+<meta name="description" content="Manage ICC Cricket Nations."/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ═══════════════ PAGE LOADER ═══════════════ -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
+  </div>
+
+  <!-- Desktop nav links -->
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom active" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="#" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+  </div>
+
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
+    <button class="notification-btn" id="notifBtn" aria-label="Notifications">
+      <i class="fas fa-bell fa-lg"></i>
+      <span class="notif-badge"></span>
+    </button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard </a>
+  <a href="countries.html" class="sidebar-link active" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-pie"></i> Statistics</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+
+  <span class="sidebar-section-title">Management</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-users-gear"></i> Teams</a>
+  <a href="search.html" class="sidebar-link open-search"><i class="fas fa-search"></i> Search</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-sliders"></i> Settings</a>
+
+  <div class="sidebar-footer">
+    <a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main class="main-content" id="mainContent">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 animate-in">
+    <div>
+        <h1 class="hero-title" style="font-size: 1.8rem; margin-bottom: 4px;">Countries <span>Management</span></h1>
+        <p class="hero-subtitle mb-0">Manage ICC member nations, captains, and coaching staff.</p>
+    </div>
+    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addCountryModal">
+        <i class="fas fa-plus"></i> Add Country
+    </button>
+  </div>
+
+  <div class="content-card animate-in delay-1">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <h2 class="section-title mb-0 border-0 after-none" style="flex: none;"><i class="fas fa-globe" style="color:var(--accent)"></i> Participating Nations</h2>
+          <div class="search-input-wrap mb-0" style="min-width: 250px;">
+              <i class="fas fa-search search-icon-abs"></i>
+              <input type="text" class="search-input" id="countrySearch" placeholder="Search countries, captains..." autocomplete="off"/>
+          </div>
+      </div>
+
+      <div class="table-responsive">
+          <table class="table custom-table" id="countriesTable">
+              <thead>
+                  <tr>
+                      <th>Country</th>
+                      <th>Captain</th>
+                      <th>Coach</th>
+                      <th class="text-center">ICC Rank</th>
+                      <th class="text-end">Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr class="animate-row">
+                      <td>
+                          <div class="d-flex align-items-center gap-2">
+                              <span class="team-flag">🇮🇳</span>
+                              <span class="fw-bold">India</span>
+                          </div>
+                      </td>
+                      <td>Rohit Sharma</td>
+                      <td>Rahul Dravid</td>
+                      <td class="text-center"><span class="badge-rank gold">1</span></td>
+                      <td class="text-end">
+                          <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                      </td>
+                  </tr>
+                  <tr class="animate-row" style="animation-delay: 0.1s;">
+                      <td>
+                          <div class="d-flex align-items-center gap-2">
+                              <span class="team-flag">🇦🇺</span>
+                              <span class="fw-bold">Australia</span>
+                          </div>
+                      </td>
+                      <td>Pat Cummins</td>
+                      <td>Andrew McDonald</td>
+                      <td class="text-center"><span class="badge-rank silver">2</span></td>
+                      <td class="text-end">
+                          <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                      </td>
+                  </tr>
+                  <tr class="animate-row" style="animation-delay: 0.2s;">
+                      <td>
+                          <div class="d-flex align-items-center gap-2">
+                              <span class="team-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+                              <span class="fw-bold">England</span>
+                          </div>
+                      </td>
+                      <td>Jos Buttler</td>
+                      <td>Matthew Mott</td>
+                      <td class="text-center"><span class="badge-rank bronze">3</span></td>
+                      <td class="text-end">
+                          <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                      </td>
+                  </tr>
+                  <tr class="animate-row" style="animation-delay: 0.3s;">
+                      <td>
+                          <div class="d-flex align-items-center gap-2">
+                              <span class="team-flag">🇵🇰</span>
+                              <span class="fw-bold">Pakistan</span>
+                          </div>
+                      </td>
+                      <td>Babar Azam</td>
+                      <td>Gary Kirsten</td>
+                      <td class="text-center"><span class="badge-rank">5</span></td>
+                      <td class="text-end">
+                          <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                      </td>
+                  </tr>
+                  <tr class="animate-row" style="animation-delay: 0.4s;">
+                      <td>
+                          <div class="d-flex align-items-center gap-2">
+                              <span class="team-flag">🇳🇿</span>
+                              <span class="fw-bold">New Zealand</span>
+                          </div>
+                      </td>
+                      <td>Kane Williamson</td>
+                      <td>Gary Stead</td>
+                      <td class="text-center"><span class="badge-rank">4</span></td>
+                      <td class="text-end">
+                          <button class="btn-icon"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon text-danger"><i class="fas fa-trash"></i></button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+          <div id="noResults" class="text-center py-4 d-none">
+              <div class="mb-3" style="font-size: 2rem; color: var(--muted);"><i class="fas fa-search-minus"></i></div>
+              <p class="text-muted mb-0">No countries found matching your search.</p>
+          </div>
+      </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dashboard-footer">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project &nbsp;|&nbsp; All rights reserved.
+  </div>
+
+</main><!-- /main -->
+
+<!-- ═══════════════ ADD COUNTRY MODAL ═══════════════ -->
+<div class="modal fade" id="addCountryModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered custom-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-plus-circle me-2 text-accent"></i>Add New Country</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addCountryForm">
+          <div class="mb-3">
+            <label class="form-label">Country Name</label>
+            <input type="text" class="form-control custom-input" placeholder="e.g. South Africa" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Flag Emoji</label>
+            <input type="text" class="form-control custom-input" placeholder="e.g. 🇿🇦" required>
+          </div>
+          <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                  <label class="form-label">Captain</label>
+                  <input type="text" class="form-control custom-input" placeholder="Enter captain name">
+              </div>
+              <div class="col-md-6">
+                  <label class="form-label">Head Coach</label>
+                  <input type="text" class="form-control custom-input" placeholder="Enter coach name">
+              </div>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Initial ICC Rank</label>
+              <input type="number" class="form-control custom-input" placeholder="e.g. 6" min="1">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary-custom" onclick="document.getElementById('addCountryModal').querySelector('.btn-close').click(); showToast('Country added successfully!', 'success');">Save Country</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SEARCH MODAL ═══════════════ -->
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <i class="fas fa-search search-icon-abs"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search players, countries, matches…" autocomplete="off"/>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <span class="search-tag"><i class="fas fa-person-running fa-xs"></i> Players</span>
+      <span class="search-tag"><i class="fas fa-flag fa-xs"></i> Countries</span>
+      <span class="search-tag"><i class="fas fa-baseball-bat-ball fa-xs"></i> Matches</span>
+      <span class="search-tag"><i class="fas fa-trophy fa-xs"></i> Rankings</span>
+    </div>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">
+      Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">ESC</kbd> to close
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

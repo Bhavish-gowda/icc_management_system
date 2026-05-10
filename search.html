@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Search Results - ICC</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ═══════════════ PAGE LOADER ═══════════════ -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
+  </div>
+
+  <!-- Desktop nav links -->
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+  </div>
+
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
+    <button class="notification-btn" id="notifBtn" aria-label="Notifications">
+      <i class="fas fa-bell fa-lg"></i>
+      <span class="notif-badge"></span>
+    </button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard </a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-chart-pie"></i> Statistics</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+
+  <span class="sidebar-section-title">Management</span>
+  <a href="#" class="sidebar-link"><i class="fas fa-users-gear"></i> Teams</a>
+  <a href="#" class="sidebar-link open-search active"><i class="fas fa-search"></i> Search</a>
+  <a href="#" class="sidebar-link"><i class="fas fa-sliders"></i> Settings</a>
+
+  <div class="sidebar-footer">
+    <a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main class="main-content" id="mainContent">
+  
+  <div class="mb-4 animate-in">
+    <h1 class="hero-title" style="font-size: 1.8rem; margin-bottom: 4px;">Search <span>Results</span></h1>
+    <p class="hero-subtitle mb-0">Showing results for: <strong id="searchQueryDisplay" class="text-accent">"..."</strong></p>
+  </div>
+
+  <div class="content-card animate-in delay-1">
+      <div class="d-flex justify-content-center py-5" id="searchState">
+          <div class="text-center">
+              <div class="spinner-border text-accent mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+              <h5 class="text-muted">Searching global database...</h5>
+          </div>
+      </div>
+      
+      <div id="searchResults" class="d-none">
+          <!-- Populated by JS -->
+      </div>
+  </div>
+
+  <div class="dashboard-footer mt-5">
+    &copy; 2025 <span>ICC Cricket Management System</span>
+  </div>
+
+</main>
+
+<!-- ═══════════════ SEARCH MODAL ═══════════════ -->
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <form id="globalSearchForm" action="search.html" method="GET">
+        <div class="search-input-wrap">
+          <i class="fas fa-search search-icon-abs"></i>
+          <input type="text" name="q" class="search-input" id="searchInput" placeholder="Search players, countries, matches…" autocomplete="off"/>
+        </div>
+    </form>
+    <div class="d-flex gap-2 flex-wrap">
+      <span class="search-tag"><i class="fas fa-person-running fa-xs"></i> Players</span>
+      <span class="search-tag"><i class="fas fa-flag fa-xs"></i> Countries</span>
+      <span class="search-tag"><i class="fas fa-baseball-bat-ball fa-xs"></i> Matches</span>
+    </div>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">
+      Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">Enter</kbd> to search or <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">ESC</kbd> to close
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>

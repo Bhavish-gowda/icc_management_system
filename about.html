@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About - ICC Cricket Management System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div id="pageLoader" class="page-loader"><div class="loader-spinner"></div></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0" style="color:var(--muted);font-size:1.2rem;"><i class="fas fa-bars"></i></button>
+    <a href="index.html" class="navbar-brand"><div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div><span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span></a>
+  </div>
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="players.html" class="nav-link-custom"><i class="fas fa-person-running"></i> Players</a>
+    <a href="rankings.html" class="nav-link-custom"><i class="fas fa-trophy"></i> Rankings</a>
+    <a href="about.html" class="nav-link-custom active"><i class="fas fa-info-circle"></i> About</a>
+  </div>
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav"><a href="search.html" style="color:inherit;text-decoration:none;"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span></a></button>
+    <button class="notification-btn" id="notifBtn"><i class="fas fa-bell fa-lg"></i><span class="notif-badge"></span></button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+<aside class="sidebar" id="sidebar">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="players.html" class="sidebar-link"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
+  <a href="teams.html" class="sidebar-link"><i class="fas fa-users"></i> Teams</a>
+  <a href="matches.html" class="sidebar-link"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="rankings.html" class="sidebar-link"><i class="fas fa-trophy"></i> Rankings</a>
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="statistics.html" class="sidebar-link"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link"><i class="fas fa-medal"></i> Tournaments</a>
+  <span class="sidebar-section-title">More</span>
+  <a href="search.html" class="sidebar-link"><i class="fas fa-search"></i> Search</a>
+  <a href="about.html" class="sidebar-link active"><i class="fas fa-info-circle"></i> About</a>
+  <div class="sidebar-footer"><a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a></div>
+</aside>
+<main class="main-content" id="mainContent">
+
+  <!-- Hero -->
+  <section class="hero-section animate-in mb-4">
+    <div class="live-badge"><span class="live-dot"></span> DBMS Final Year Project</div>
+    <p class="hero-greeting">&#9679; PROJECT OVERVIEW</p>
+    <h1 class="hero-title">ICC Cricket <span>Management System</span></h1>
+    <p class="hero-subtitle">A comprehensive frontend demonstration of a real-world cricket analytics platform — designed for DBMS course project evaluation. Built with HTML, CSS, JavaScript &amp; Bootstrap 5.</p>
+    <div class="hero-actions">
+      <a href="index.html" class="btn-primary-custom"><i class="fas fa-gauge-high"></i> View Dashboard</a>
+      <a href="players.html" class="btn-outline-custom"><i class="fas fa-person-running"></i> Browse Players</a>
+    </div>
+  </section>
+
+  <!-- Feature Cards -->
+  <h2 class="section-title animate-in delay-1"><i class="fas fa-star" style="color:#fbbf24"></i> Key Features</h2>
+  <div class="row g-3 mb-4 animate-in delay-1">
+    <div class="col-sm-6 col-lg-4">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-blue"><i class="fas fa-database"></i></div></div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">Data Management</div>
+        <div class="stat-label">CRUD operations for players, countries, and matches with modal forms and live table updates.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-green"><i class="fas fa-search"></i></div></div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">Global Search</div>
+        <div class="stat-label">Real-time JavaScript search filtering across players, countries, and match data.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-purple"><i class="fas fa-chart-bar"></i></div></div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">Analytics Dashboard</div>
+        <div class="stat-label">Performance statistics, batting &amp; bowling leaderboards, ranking tables with trend indicators.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-orange"><i class="fas fa-mobile-alt"></i></div></div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">Fully Responsive</div>
+        <div class="stat-label">Adaptive layout for mobile, tablet, and desktop. Collapsible sidebar and hamburger menu.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-blue"><i class="fas fa-moon"></i></div></div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">Dark Mode Toggle</div>
+        <div class="stat-label">One-click theme switcher between the neon dark theme and a clean light mode.</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+      <div class="stat-card">
+        <div class="stat-card-inner"><div class="stat-icon icon-green"><i class="fas fa-trophy"></i></div></div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.25rem">11 Pages</div>
+        <div class="stat-label">Complete multi-page system: Dashboard, Countries, Players, Teams, Matches, Rankings + more.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <h2 class="section-title animate-in delay-2"><i class="fas fa-code" style="color:var(--accent)"></i> Tech Stack</h2>
+  <div class="content-card animate-in delay-2">
+    <div class="row g-3">
+      <div class="col-6 col-md-3 text-center">
+        <div style="font-size:2.5rem;margin-bottom:.5rem;">🌐</div>
+        <div style="font-weight:700;margin-bottom:.25rem">HTML5</div>
+        <div style="font-size:.78rem;color:var(--muted)">Semantic markup</div>
+      </div>
+      <div class="col-6 col-md-3 text-center">
+        <div style="font-size:2.5rem;margin-bottom:.5rem;">🎨</div>
+        <div style="font-weight:700;margin-bottom:.25rem">CSS3</div>
+        <div style="font-size:.78rem;color:var(--muted)">Glassmorphism + Animations</div>
+      </div>
+      <div class="col-6 col-md-3 text-center">
+        <div style="font-size:2.5rem;margin-bottom:.5rem;">⚡</div>
+        <div style="font-weight:700;margin-bottom:.25rem">JavaScript</div>
+        <div style="font-size:.78rem;color:var(--muted)">ES6 · DOM manipulation</div>
+      </div>
+      <div class="col-6 col-md-3 text-center">
+        <div style="font-size:2.5rem;margin-bottom:.5rem;">🅱️</div>
+        <div style="font-weight:700;margin-bottom:.25rem">Bootstrap 5</div>
+        <div style="font-size:.78rem;color:var(--muted)">Grid · Components · Modals</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Directory -->
+  <h2 class="section-title animate-in delay-3"><i class="fas fa-sitemap" style="color:#a855f7"></i> Pages Directory</h2>
+  <div class="content-card p-0 overflow-hidden animate-in delay-3">
+    <table class="table custom-table mb-0">
+      <thead><tr><th>Page</th><th>File</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><i class="fas fa-gauge-high text-accent me-2"></i>Dashboard</td><td><code style="color:var(--accent2);font-size:.8rem">index.html</code></td><td style="color:var(--muted);font-size:.85rem">Overview, live matches, rankings, activity</td></tr>
+        <tr><td><i class="fas fa-flag text-accent me-2"></i>Countries</td><td><code style="color:var(--accent2);font-size:.8rem">countries.html</code></td><td style="color:var(--muted);font-size:.85rem">Member nations, search, add country</td></tr>
+        <tr><td><i class="fas fa-person-running text-accent me-2"></i>Players</td><td><code style="color:var(--accent2);font-size:.8rem">players.html</code></td><td style="color:var(--muted);font-size:.85rem">Player roster, filter, add player</td></tr>
+        <tr><td><i class="fas fa-users text-accent me-2"></i>Teams</td><td><code style="color:var(--accent2);font-size:.8rem">teams.html</code></td><td style="color:var(--muted);font-size:.85rem">Team profile cards, captains, win rates</td></tr>
+        <tr><td><i class="fas fa-baseball-bat-ball text-accent me-2"></i>Matches</td><td><code style="color:var(--accent2);font-size:.8rem">matches.html</code></td><td style="color:var(--muted);font-size:.85rem">Live matches, results, schedule match</td></tr>
+        <tr><td><i class="fas fa-trophy text-accent me-2"></i>Rankings</td><td><code style="color:var(--accent2);font-size:.8rem">rankings.html</code></td><td style="color:var(--muted);font-size:.85rem">ODI / T20I / Test rankings tables</td></tr>
+        <tr><td><i class="fas fa-chart-bar text-accent me-2"></i>Statistics</td><td><code style="color:var(--accent2);font-size:.8rem">statistics.html</code></td><td style="color:var(--muted);font-size:.85rem">Top batsmen, bowlers, analytics</td></tr>
+        <tr><td><i class="fas fa-calendar-days text-accent me-2"></i>Schedule</td><td><code style="color:var(--accent2);font-size:.8rem">schedule.html</code></td><td style="color:var(--muted);font-size:.85rem">Upcoming fixtures and results</td></tr>
+        <tr><td><i class="fas fa-medal text-accent me-2"></i>Tournaments</td><td><code style="color:var(--accent2);font-size:.8rem">tournaments.html</code></td><td style="color:var(--muted);font-size:.85rem">ICC events, winners timeline</td></tr>
+        <tr><td><i class="fas fa-search text-accent me-2"></i>Search</td><td><code style="color:var(--accent2);font-size:.8rem">search.html</code></td><td style="color:var(--muted);font-size:.85rem">Global search results page</td></tr>
+        <tr><td><i class="fas fa-info-circle text-accent me-2"></i>About</td><td><code style="color:var(--accent2);font-size:.8rem">about.html</code></td><td style="color:var(--muted);font-size:.85rem">Project overview, features, tech stack</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dashboard-footer mt-5">&copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project &nbsp;|&nbsp; All rights reserved.</div>
+</main>
+<div class="search-modal" id="searchModal">
+  <div class="search-box">
+    <form action="search.html" method="GET">
+      <div class="search-input-wrap"><i class="fas fa-search search-icon-abs"></i><input type="text" name="q" class="search-input" id="searchInput" placeholder="Search…" autocomplete="off"/></div>
+    </form>
+    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px">ESC</kbd> to close</div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+</body></html>
