@@ -15,7 +15,6 @@ function checkAuth() {
 
 const currentUser = checkAuth();
 
-// ── Centralized Data Management ──
 const DataMgr = {
   get: (key) => JSON.parse(localStorage.getItem(key)) || [],
   save: (key, data) => localStorage.setItem(key, JSON.stringify(data)),
@@ -50,8 +49,64 @@ const DataMgr = {
   deleteCountry: (id) => {
     const countries = DataMgr.getCountries().filter(c => c.id !== id);
     DataMgr.save('countries', countries);
+  },
+
+  // Matches
+  getMatches: () => DataMgr.get('matches'),
+  saveMatch: (match) => {
+    const matches = DataMgr.getMatches();
+    matches.push({ ...match, id: Date.now() });
+    DataMgr.save('matches', matches);
+  },
+
+  // Rankings
+  getTeamRankings: (type) => DataMgr.get(`team_rankings_${type}`),
+  getPlayerRankings: (type) => DataMgr.get(`player_rankings_${type}`),
+  updateRankingRating: (key, id, delta) => {
+    const rankings = DataMgr.get(key);
+    const updated = rankings.map(r => {
+      if (r.id === id || r.rank === id) {
+        const newRating = Math.max(0, (parseInt(r.rating) || 0) + delta);
+        return { ...r, rating: newRating };
+      }
+      return r;
+    });
+    // Sort after update
+    updated.sort((a, b) => b.rating - a.rating);
+    updated.forEach((r, idx) => r.rank = idx + 1);
+    DataMgr.save(key, updated);
   }
 };
+
+// ── Dummy Data Preloading ──
+function initDummyData() {
+  if (DataMgr.getPlayers().length === 0) {
+    const players = [
+      { name: "Virat Kohli", country: "India", role: "Batter", jersey: "18", matches: "292", runs: "13848", wickets: "4", id: 1 },
+      { name: "Babar Azam", country: "Pakistan", role: "Batter", jersey: "56", matches: "117", runs: "5729", wickets: "0", id: 2 },
+      { name: "Jasprit Bumrah", country: "India", role: "Bowler", jersey: "93", matches: "89", runs: "120", wickets: "149", id: 3 },
+      { name: "Steve Smith", country: "Australia", role: "Batter", jersey: "49", matches: "155", runs: "5602", wickets: "28", id: 4 },
+      { name: "Kane Williamson", country: "New Zealand", role: "Batter", jersey: "22", matches: "165", runs: "6810", wickets: "37", id: 5 },
+      { name: "Jos Buttler", country: "England", role: "Batter", jersey: "63", matches: "181", runs: "5020", wickets: "0", id: 6 },
+      { name: "Rashid Khan", country: "Afghanistan", role: "Bowler", jersey: "19", matches: "103", runs: "1200", wickets: "183", id: 7 },
+      { name: "Mitchell Starc", country: "Australia", role: "Bowler", jersey: "56", matches: "121", runs: "540", wickets: "236", id: 8 }
+    ];
+    DataMgr.save('players', players);
+  }
+
+  // Preload team rankings if empty
+  ['ODI', 'T20I', 'TEST'].forEach(type => {
+    if (DataMgr.get(`team_rankings_${type}`).length === 0) {
+      const defaultRankings = [
+        { rank: 1, team: "India", flag: "🇮🇳", rating: 126, points: "5,432", matches: 58 },
+        { rank: 2, team: "Australia", flag: "🇦🇺", rating: 121, points: "5,210", matches: 45 },
+        { rank: 3, team: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", rating: 118, points: "4,980", matches: 42 }
+      ];
+      DataMgr.save(`team_rankings_${type}`, defaultRankings);
+    }
+  });
+}
+initDummyData();
 
 // ── Global Toast (accessible from inline onclick in HTML) ──
 function showToast(msg, type = 'info') {
@@ -71,28 +126,27 @@ function showToast(msg, type = 'info') {
   document.body.appendChild(toast);
 }
 
-// ── Live Match Ticker Logic ──
-function initLiveTicker() {
-  const ticker = document.getElementById('liveTicker');
-  if (!ticker) return;
-  const updates = [
-    "IND 287/4 (42.3) vs ENG",
-    "Kohli 84* (92) | Shami 3/42",
-    "AUS leads by 40 runs vs RSA",
-    "Upcoming: PAK vs NZ @ 14:30",
-    "Babar 5,421 career runs reached"
-  ];
-  ticker.style.transition = 'opacity 0.5s ease';
-  let i = 0;
-  ticker.textContent = updates[0];
-  setInterval(() => {
-    ticker.style.opacity = 0;
+// ── Live Match Ticker Logic (Powered by CricketAPI) ──
+async function initLiveTicker() {
+  const tickerEl = document.getElementById('liveTicker');
+  if (!tickerEl) return;
+
+  const matches = await CricketAPI.getLiveMatches();
+  if (!matches || matches.length === 0) return;
+
+  let tickerIdx = 0;
+  const updateTicker = () => {
+    const m = matches[tickerIdx];
+    tickerEl.style.opacity = 0;
     setTimeout(() => {
-      i = (i + 1) % updates.length;
-      ticker.textContent = updates[i];
-      ticker.style.opacity = 1;
+      tickerEl.innerHTML = `<span class="fw-600 text-accent">${m.teams.t1.flag} ${m.teams.t1.name}</span> vs <span class="fw-600 text-accent">${m.teams.t2.flag} ${m.teams.t2.name}</span> — <span class="fw-bold">${m.teams.t1.score}</span>`;
+      tickerEl.style.opacity = 1;
+      tickerIdx = (tickerIdx + 1) % matches.length;
     }, 500);
-  }, 5000);
+  };
+
+  updateTicker();
+  CricketAPI.initAutoRefresh(updateTicker, 6000);
 }
 
 // ── Page Loader ──
@@ -213,22 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.5 });
   document.querySelectorAll('.count-up').forEach(el => counterObserver.observe(el));
 
-  // ── Live match ticker ──
-  const liveScores = [
-    { home: '🇮🇳 India', away: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 England', score: '287/4 (42.3 ov)', status: 'LIVE' },
-    { home: '🇦🇺 Australia', away: '🇿🇦 South Africa', score: '312/6 (50 ov)', status: 'DONE' },
-    { home: '🇵🇰 Pakistan', away: '🇳🇿 New Zealand', score: 'Tomorrow 14:30 IST', status: 'UPCOMING' },
-  ];
-  let tickerIdx = 0;
-  const tickerEl = document.getElementById('liveTicker');
-  function updateTicker() {
-    if (!tickerEl) return;
-    const d = liveScores[tickerIdx];
-    tickerEl.innerHTML = `<span class="fw-600">${d.home}</span> vs <span class="fw-600">${d.away}</span> — ${d.score}`;
-    tickerIdx = (tickerIdx + 1) % liveScores.length;
-  }
-  updateTicker();
-  setInterval(updateTicker, 4000);
+
+
 
   // ── Notification bell ──
   const notifBtn = document.getElementById('notifBtn');
@@ -448,22 +488,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const heroGreeting = document.querySelector('.hero-greeting');
-    if (heroGreeting) {
-      heroGreeting.innerHTML = `&#9679; WELCOME BACK, ${currentUser.role.toUpperCase()}`;
-    }
+    // Role-based UI enforcement
+    const isAdmin = currentUser.role === 'Admin';
+    
+    document.querySelectorAll('[data-admin-only="true"]').forEach(el => {
+      if (!isAdmin) {
+        el.classList.add('analyst-disabled');
+        // If it's a button, prevent click
+        if (el.tagName === 'BUTTON' || el.classList.contains('btn')) {
+          el.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            showToast('Only Admins can perform this action', 'info');
+          }, true);
+        }
+      }
+    });
 
-    // Role-based button restriction
-    if (currentUser.role === 'Analyst') {
-      const restrictedBtns = document.querySelectorAll('[data-bs-target*="Add"], .btn-primary-custom:not(.btn-search-nav), .btn-icon.text-danger');
-      restrictedBtns.forEach(btn => {
-        btn.style.opacity = '0.5';
-        btn.style.cursor = 'not-allowed';
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          showToast('Only Admins can perform this action', 'info');
-        }, true);
-      });
+    if (heroGreeting) {
+      const badge = isAdmin ? '<span class="admin-badge">Admin</span>' : '<span class="admin-badge" style="border-color:var(--muted);color:var(--muted)">Analyst</span>';
+      heroGreeting.innerHTML = `&#9679; WELCOME BACK, ${currentUser.role.toUpperCase()} ${badge}`;
     }
   }
 
@@ -496,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="text-end">${p.matches || 0}</td>
           <td class="text-end fw-bold text-accent">${p.runs || 0}</td>
           <td class="text-end">${p.wickets || 0}</td>
-          <td class="text-end">
+          <td class="text-end" data-admin-only="true">
             <button class="btn-icon view-player" data-id="${p.id}"><i class="fas fa-eye"></i></button>
             <button class="btn-icon edit-player" data-id="${p.id}"><i class="fas fa-edit"></i></button>
             <button class="btn-icon text-danger delete-player" data-id="${p.id}"><i class="fas fa-trash"></i></button>
@@ -620,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${c.captain || '-'}</td>
           <td>${c.coach || '-'}</td>
           <td class="text-center"><span class="badge-rank">${c.rank || '-'}</span></td>
-          <td class="text-end">
+          <td class="text-end" data-admin-only="true">
             <button class="btn-icon edit-country" data-id="${c.id}"><i class="fas fa-edit"></i></button>
             <button class="btn-icon text-danger delete-country" data-id="${c.id}"><i class="fas fa-trash"></i></button>
           </td>
@@ -740,6 +784,271 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  console.log('%cICC Cricket Management System', 'color:#00d4ff;font-size:18px;font-weight:bold;');
-  console.log('%cFrontend loaded successfully ✓', 'color:#00ff94;font-size:13px;');
+  // ── Real-Time API Data Integration ──
+
+  // 1. Render Live Matches
+  async function renderLiveMatches() {
+    const container = document.getElementById('liveMatchesRow');
+    if (!container) return;
+
+    // Show loading skeleton
+    container.innerHTML = '<div class="col-12"><div class="match-card-detailed shimmer"></div></div>';
+
+    const matches = await CricketAPI.getLiveMatches();
+    container.innerHTML = '';
+
+    matches.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'col-md-6';
+      card.innerHTML = `
+        <div class="match-card-detailed live-game animate-in">
+          <div class="match-header">
+            <span class="match-badge badge-live">LIVE</span>
+            <span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> ${m.venue} · ${m.format}</span>
+          </div>
+          <div class="match-body">
+            <div class="team-block"><span class="flag">${m.teams.t1.flag}</span><div class="team-stats"><div class="name">${m.teams.t1.name}</div><div class="score">${m.teams.t1.score}</div></div></div>
+            <div class="vs-text">VS</div>
+            <div class="team-block text-end flex-row-reverse"><span class="flag">${m.teams.t2.flag}</span><div class="team-stats align-items-end"><div class="name">${m.teams.t2.name}</div><div class="score ${m.teams.t2.score === 'Yet to bat' ? 'text-muted' : ''}">${m.teams.t2.score}</div></div></div>
+          </div>
+          <div class="match-footer"><div class="status-text text-accent">${m.status} · ${m.teams.t1.overs} ov</div><button class="btn-icon"><i class="fas fa-chevron-right"></i></button></div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // 2. Render Rankings
+  async function renderRankings(type = 'ODI') {
+    const body = document.getElementById(`${type.toLowerCase()}RankingsBody`);
+    if (!body) return;
+
+    const data = await CricketAPI.getRankings(type);
+    body.innerHTML = '';
+
+    data.forEach((r, idx) => {
+      const rankClass = idx === 0 ? 'gold' : (idx === 1 ? 'silver' : (idx === 2 ? 'bronze' : ''));
+      const row = document.createElement('tr');
+      row.className = 'animate-row';
+      row.style.animationDelay = `${idx * 0.1}s`;
+      row.innerHTML = `
+        <td><span class="badge-rank ${rankClass}">${r.rank}</span></td>
+        <td><div class="d-flex align-items-center gap-2"><span class="team-flag">${r.flag}</span><span class="fw-bold">${r.team}</span></div></td>
+        <td class="text-end">${r.matches}</td>
+        <td class="text-end">${r.points}</td>
+        <td class="text-end fw-bold text-accent">${r.rating}</td>
+      `;
+      body.appendChild(row);
+    });
+  }
+
+  // 3. Render Upcoming Schedule
+  async function renderUpcomingMatches() {
+    const container = document.getElementById('upcomingMatchesRow');
+    if (!container) return;
+
+    // Load both static mock matches and scheduled matches from storage
+    const scheduled = DataMgr.getMatches();
+    const staticMatches = [
+      { date: 'TOMORROW', team1: 'Pakistan', flag1: '🇵🇰', team2: 'New Zealand', flag2: '🇳🇿', venue: 'Lahore', time: '14:30' },
+      { date: 'IN 2 DAYS', team1: 'Sri Lanka', flag1: '🇱🇰', team2: 'West Indies', flag2: '🏝️', venue: 'Galle', time: '09:30' }
+    ];
+
+    const allMatches = [...scheduled.map(m => ({
+      date: m.date, team1: m.t1, team2: m.t2, venue: m.venue, time: 'TBD', isScheduled: true
+    })), ...staticMatches];
+
+    container.innerHTML = '';
+    allMatches.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'col-md-6';
+      card.innerHTML = `
+        <div class="match-card-detailed animate-in">
+          <div class="match-header">
+            <span class="match-badge ${m.isScheduled ? 'badge-live' : 'badge-upcoming'}" style="${m.isScheduled ? 'background:rgba(0,212,255,0.1);color:var(--accent)' : ''}">
+              ${m.isScheduled ? 'SCHEDULED' : m.date}
+            </span>
+            <span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> ${m.venue}</span>
+          </div>
+          <div class="match-body">
+            <div class="team-block"><div class="team-stats"><div class="name">${m.team1}</div></div></div>
+            <div class="vs-text">VS</div>
+            <div class="team-block text-end flex-row-reverse"><div class="team-stats align-items-end"><div class="name">${m.team2}</div></div></div>
+          </div>
+          <div class="match-footer"><div class="status-text text-muted">${m.isScheduled ? 'Date: ' + m.date : 'Starts at ' + m.time + ' IST'}</div></div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // 4. Player Statistics Modal Enhancement
+  async function showRealPlayerStats(playerName) {
+    const modal = new bootstrap.Modal(document.getElementById('viewPlayerModal'));
+    const data = await CricketAPI.getPlayerStats(playerName);
+    
+    if (data) {
+      document.getElementById('vName').textContent = playerName;
+      document.getElementById('vCountry').textContent = data.country;
+      // Inject real stats into the modal
+      const statsBody = document.getElementById('vStatsBody') || document.createElement('div');
+      statsBody.id = 'vStatsBody';
+      statsBody.innerHTML = `
+        <div class="row g-3 mt-3">
+          <div class="col-4 text-center"><div class="text-muted small">ODI Runs</div><div class="fw-bold text-accent">${data.stats.ODI.runs}</div></div>
+          <div class="col-4 text-center"><div class="text-muted small">T20 Runs</div><div class="fw-bold text-accent">${data.stats.T20I.runs}</div></div>
+          <div class="col-4 text-center"><div class="text-muted small">Test Runs</div><div class="fw-bold text-accent">${data.stats.TEST.runs}</div></div>
+        </div>
+      `;
+      document.querySelector('#viewPlayerModal .modal-body').appendChild(statsBody);
+      modal.show();
+    }
+  }
+
+  // 5. Render Dashboard Stats
+  async function renderDashboardStats() {
+    const liveMatches = await CricketAPI.getLiveMatches();
+    const liveCountEl = document.getElementById('qsLiveMatches');
+    if (liveCountEl) liveCountEl.textContent = liveMatches.length;
+
+    // Simulate real-time fluctuating stats for "Today's Games" etc
+    const runsToday = document.getElementById('qsRunsToday');
+    if (runsToday) {
+      let currentRuns = 4821;
+      setInterval(() => {
+        currentRuns += Math.floor(Math.random() * 10);
+        runsToday.textContent = currentRuns.toLocaleString();
+      }, 5000);
+    }
+  }
+
+  // ── Admin Ranking Controls ──
+  window.adjustRating = (key, id, delta) => {
+    if (currentUser.role !== 'Admin') return showToast('Only Admins can perform this action', 'info');
+    DataMgr.updateRankingRating(key, id, delta);
+    showToast('Rating updated successfully!', 'success');
+    
+    // Refresh UI
+    if (window.location.pathname.includes('rankings.html')) {
+      const type = key.split('_').pop().toUpperCase();
+      if (key.includes('player')) {
+        renderPlayerRankings();
+      } else {
+        renderRankings(type);
+      }
+    }
+  };
+
+  // 1. Enhanced Render Rankings with Admin Controls
+  async function renderRankings(type = 'ODI') {
+    const body = document.getElementById(`${type.toLowerCase()}RankingsBody`);
+    if (!body) return;
+
+    const isAdmin = currentUser.role === 'Admin';
+    const data = DataMgr.getTeamRankings(type);
+    body.innerHTML = '';
+
+    data.forEach((r, idx) => {
+      const rankClass = idx === 0 ? 'gold' : (idx === 1 ? 'silver' : (idx === 2 ? 'bronze' : ''));
+      const row = document.createElement('tr');
+      row.className = 'animate-row';
+      row.style.animationDelay = `${idx * 0.1}s`;
+      row.innerHTML = `
+        <td><span class="badge-rank ${rankClass}">${r.rank}</span></td>
+        <td><div class="d-flex align-items-center gap-2"><span class="team-flag">${r.flag}</span><span class="fw-bold">${r.team}</span></div></td>
+        <td class="text-end">${r.matches}</td>
+        <td class="text-end">${r.points}</td>
+        <td class="text-end fw-bold text-accent">${r.rating}</td>
+        <td class="text-center" data-admin-only="true">
+          <div class="d-flex justify-content-center gap-2">
+            <button class="admin-control-btn btn-plus" onclick="adjustRating('team_rankings_${type}', '${r.team}', 1)"><i class="fas fa-plus"></i></button>
+            <button class="admin-control-btn btn-minus" onclick="adjustRating('team_rankings_${type}', '${r.team}', -1)"><i class="fas fa-minus"></i></button>
+          </div>
+        </td>
+      `;
+      body.appendChild(row);
+    });
+  }
+
+  // 2. Render Player Rankings
+  async function renderPlayerRankings() {
+    const body = document.getElementById('playerRankingsBody');
+    if (!body) return;
+
+    const isAdmin = currentUser.role === 'Admin';
+    // Use dummy player rankings if empty
+    if (DataMgr.get('player_rankings').length === 0) {
+      const playerRanks = [
+        { rank: 1, name: "Virat Kohli", country: "India", rating: 890, id: 1 },
+        { rank: 2, name: "Babar Azam", country: "Pakistan", rating: 875, id: 2 },
+        { rank: 3, name: "Steve Smith", country: "Australia", rating: 850, id: 4 }
+      ];
+      DataMgr.save('player_rankings', playerRanks);
+    }
+
+    const data = DataMgr.get('player_rankings');
+    body.innerHTML = '';
+
+    data.forEach((r, idx) => {
+      const rankClass = idx === 0 ? 'gold' : (idx === 1 ? 'silver' : (idx === 2 ? 'bronze' : ''));
+      const row = document.createElement('tr');
+      row.className = 'animate-row';
+      row.innerHTML = `
+        <td><span class="badge-rank ${rankClass}">${r.rank}</span></td>
+        <td class="fw-bold">${r.name}</td>
+        <td>${r.country}</td>
+        <td class="text-end fw-bold text-accent">${r.rating}</td>
+        <td class="text-center" data-admin-only="true">
+          <div class="d-flex justify-content-center gap-2">
+            <button class="admin-control-btn btn-plus" onclick="adjustRating('player_rankings', ${r.id}, 5)"><i class="fas fa-plus"></i></button>
+            <button class="admin-control-btn btn-minus" onclick="adjustRating('player_rankings', ${r.id}, -5)"><i class="fas fa-minus"></i></button>
+          </div>
+        </td>
+      `;
+      body.appendChild(row);
+    });
+  }
+
+  // 3. Match Scheduling Handler
+  const btnSaveMatch = document.getElementById('btnSaveMatch');
+  if (btnSaveMatch) {
+    btnSaveMatch.addEventListener('click', () => {
+      const match = {
+        t1: document.getElementById('mTeam1').value,
+        t2: document.getElementById('mTeam2').value,
+        format: document.getElementById('mFormat').value,
+        tournament: document.getElementById('mTournament').value,
+        date: document.getElementById('mDate').value,
+        venue: document.getElementById('mVenue').value
+      };
+
+      if (!match.t1 || !match.t2 || !match.date) return showToast('Please fill required fields', 'info');
+      
+      DataMgr.saveMatch(match);
+      showToast('Match scheduled successfully!', 'success');
+      bootstrap.Modal.getInstance(document.getElementById('scheduleMatchModal')).hide();
+      
+      if (window.location.pathname.includes('schedule.html')) location.reload();
+    });
+  }
+
+  // Initialize
+  if (window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/')) {
+    renderDashboardStats();
+    initLiveTicker();
+  }
+
+  if (window.location.pathname.includes('matches.html')) {
+    renderLiveMatches();
+    renderUpcomingMatches();
+  }
+
+  if (window.location.pathname.includes('rankings.html')) {
+    renderRankings('ODI');
+    renderRankings('T20I');
+    renderRankings('TEST');
+    renderPlayerRankings();
+  }
+
+  console.log('%cAdmin Expansion Module Loaded ✓', 'color:#00d4ff;font-weight:bold;');
 });

@@ -84,9 +84,12 @@
         <h1 class="hero-title" style="font-size: 1.8rem; margin-bottom: 4px;">Countries <span>Management</span></h1>
         <p class="hero-subtitle mb-0">Manage ICC member nations, captains, and coaching staff.</p>
     </div>
-    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addCountryModal">
-        <i class="fas fa-plus"></i> Add Country
-    </button>
+    <div class="d-flex gap-2">
+        <button class="btn-outline-custom"><i class="fas fa-filter"></i> Filter</button>
+        <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addCountryModal" data-admin-only="true">
+            <i class="fas fa-plus"></i> Add Country
+        </button>
+    </div>
   </div>
 
   <div class="content-card animate-in delay-1">
@@ -106,8 +109,8 @@
                       <th>Format</th>
                       <th>Captain</th>
                       <th>Coach</th>
-                      <th class="text-center">ICC Rank</th>
-                      <th class="text-end">Actions</th>
+                      <th class="text-center">Rank</th>
+                      <th class="text-end" data-admin-only="true">Actions</th>
                   </tr>
               </thead>
               <tbody>

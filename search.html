@@ -196,6 +196,7 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
 <script src="js/script.js"></script>
 <script>
   const searchInput = document.getElementById('mainSearchInput');
@@ -227,16 +228,37 @@
     }, 600);
   });
 
-  function performSearch(query) {
+  async function performSearch(query) {
     loadingState.classList.add('d-none');
     
-    // Demo search logic
-    if (query.toLowerCase().includes('xxx') || query.length > 20) {
-      noResultsState.classList.remove('d-none');
+    // Check if player exists in our real-time data
+    const player = await CricketAPI.getPlayerStats(query);
+
+    if (player) {
+      searchState.classList.add('d-none');
+      resultsGrid.classList.remove('d-none');
+      resultsGrid.innerHTML = `
+        <div class="col-md-6 mx-auto">
+          <div class="match-card-detailed animate-in">
+            <div class="match-header"><span class="match-badge badge-live">PLAYER FOUND</span></div>
+            <div class="match-body flex-column align-items-center text-center">
+              <div class="player-avatar mb-3" style="width:80px;height:80px;font-size:2rem;">${query.split(' ').map(n=>n[0]).join('')}</div>
+              <h4>${query}</h4>
+              <p class="text-muted">${player.role} · ${player.country}</p>
+              <div class="row w-100 g-2 mt-2">
+                <div class="col-4"><div class="text-accent fw-bold">${player.stats.ODI.runs}</div><div class="small text-muted">ODI Runs</div></div>
+                <div class="col-4"><div class="text-accent fw-bold">${player.stats.T20I.runs}</div><div class="small text-muted">T20 Runs</div></div>
+                <div class="col-4"><div class="text-accent fw-bold">${player.stats.TEST.runs}</div><div class="small text-muted">Test Runs</div></div>
+              </div>
+              <button class="btn-primary-custom mt-4 w-100" onclick="window.location='players.html'">View Full Profile</button>
+            </div>
+          </div>
+        </div>
+      `;
+      showToast(`Real-time stats loaded for ${query}`, 'success');
     } else {
-      searchState.classList.remove('d-none');
-      // In a real app, we would update the resultsGrid here
-      showToast(`Found results for "${query}"`, 'success');
+      resultsGrid.classList.add('d-none');
+      noResultsState.classList.remove('d-none');
     }
   }
 

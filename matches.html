@@ -98,48 +98,14 @@
           
           <!-- Live Matches -->
           <h2 class="section-title animate-in delay-1"><i class="fas fa-broadcast-tower" style="color:#ff4d6d"></i> Live Action</h2>
-          <div class="row g-3 mb-4 animate-in delay-1">
-              <div class="col-md-6">
-                  <div class="match-card-detailed live-game">
-                      <div class="match-header">
-                          <span class="match-badge badge-live">LIVE</span>
-                          <span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> Eden Gardens · ODI</span>
-                      </div>
-                      <div class="match-body">
-                          <div class="team-block"><span class="flag">🇮🇳</span><div class="team-stats"><div class="name">India</div><div class="score">287/4</div></div></div>
-                          <div class="vs-text">VS</div>
-                          <div class="team-block text-end flex-row-reverse"><span class="flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span><div class="team-stats align-items-end"><div class="name">England</div><div class="score text-muted">Yet to bat</div></div></div>
-                      </div>
-                      <div class="match-footer"><div class="status-text text-accent">India elected to bat · 42.3 overs</div><button class="btn-icon"><i class="fas fa-chevron-right"></i></button></div>
-                  </div>
-              </div>
+          <div class="row g-3 mb-4 animate-in delay-1" id="liveMatchesRow">
+              <!-- Live match cards will be injected here -->
           </div>
 
           <!-- Upcoming Matches -->
           <h2 class="section-title animate-in delay-2"><i class="fas fa-calendar-alt" style="color:var(--accent)"></i> Upcoming Fixtures</h2>
-          <div class="row g-3 mb-4 animate-in delay-2">
-              <div class="col-md-6">
-                  <div class="match-card-detailed">
-                      <div class="match-header"><span class="match-badge badge-upcoming">TOMORROW</span><span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> Gaddafi Stadium · T20I</span></div>
-                      <div class="match-body">
-                          <div class="team-block"><span class="flag">🇵🇰</span><div class="team-stats"><div class="name">Pakistan</div></div></div>
-                          <div class="vs-text">VS</div>
-                          <div class="team-block text-end flex-row-reverse"><span class="flag">🇳🇿</span><div class="team-stats align-items-end"><div class="name">New Zealand</div></div></div>
-                      </div>
-                      <div class="match-footer"><div class="status-text text-muted">Starts at 14:30 IST</div></div>
-                  </div>
-              </div>
-              <div class="col-md-6">
-                  <div class="match-card-detailed">
-                      <div class="match-header"><span class="match-badge badge-upcoming" style="background:rgba(168,85,247,0.15);color:#a855f7;">IN 2 DAYS</span><span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> Galle · Test Match</span></div>
-                      <div class="match-body">
-                          <div class="team-block"><span class="flag">🇱🇰</span><div class="team-stats"><div class="name">Sri Lanka</div></div></div>
-                          <div class="vs-text">VS</div>
-                          <div class="team-block text-end flex-row-reverse"><span class="flag">🏝️</span><div class="team-stats align-items-end"><div class="name">West Indies</div></div></div>
-                      </div>
-                      <div class="match-footer"><div class="status-text text-muted">Day 1 starts at 09:30 IST</div></div>
-                  </div>
-              </div>
+          <div class="row g-3 mb-4 animate-in delay-2" id="upcomingMatchesRow">
+              <!-- Upcoming match cards will be injected here -->
           </div>
 
           <!-- Recent Results -->
@@ -301,6 +267,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

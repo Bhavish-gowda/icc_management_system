@@ -103,6 +103,9 @@
           <li class="nav-item" role="presentation">
               <button class="nav-link" id="test-tab" data-bs-toggle="tab" data-bs-target="#test" type="button" role="tab">Test Rankings</button>
           </li>
+          <li class="nav-item" role="presentation">
+              <button class="nav-link" id="player-ranks-tab" data-bs-toggle="tab" data-bs-target="#player-ranks" type="button" role="tab">Player Rankings</button>
+          </li>
       </ul>
 
       <div class="tab-content" id="rankingsTabContent">
@@ -117,6 +120,7 @@
                               <th class="text-end">Matches</th>
                               <th class="text-end">Points</th>
                               <th class="text-end">Rating</th>
+                              <th class="text-center" data-admin-only="true">Actions</th>
                           </tr>
                       </thead>
                       <tbody id="odiRankingsBody">
@@ -158,6 +162,25 @@
                   </table>
               </div>
           </div>
+          <!-- Player Rankings Tab -->
+          <div class="tab-pane fade" id="player-ranks" role="tabpanel">
+              <div class="table-responsive">
+                  <table class="table custom-table">
+                      <thead>
+                          <tr>
+                              <th style="width: 80px;">Rank</th>
+                              <th>Player</th>
+                              <th>Country</th>
+                              <th class="text-end">Rating</th>
+                              <th class="text-center" data-admin-only="true">Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody id="playerRankingsBody">
+                          <!-- Injected via script -->
+                      </tbody>
+                  </table>
+              </div>
+          </div>
       </div>
   </div>
 
@@ -189,6 +212,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

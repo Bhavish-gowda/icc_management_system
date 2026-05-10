@@ -263,6 +263,23 @@ body {
 .stat-progress { background: rgba(255,255,255,0.08); border-radius: 4px; height: 4px; overflow: hidden; }
 .stat-progress-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 1.5s ease; }
 
+/* ── Global Visibility Fixes ── */
+.card, .content-card, .match-card-detailed, .stat-card, .modal-content {
+  color: var(--text) !important;
+}
+.modal-title, .modal-body label, .form-label { color: #fff !important; font-weight: 600; }
+.custom-input, .form-select, .form-control { 
+  background: rgba(255,255,255,0.05) !important; 
+  border: 1px solid var(--border) !important; 
+  color: #fff !important; 
+}
+.custom-input::placeholder { color: rgba(255,255,255,0.4) !important; }
+.table, .custom-table { color: var(--text) !important; }
+.table th { color: var(--accent) !important; border-bottom-color: var(--border) !important; }
+.text-muted, .activity-sub, .hero-subtitle { color: var(--muted) !important; }
+.vs-text { color: var(--accent) !important; font-weight: 800; }
+
+
 /* ── Quick Stats Banner ── */
 .quick-stats {
   background: rgba(0,212,255,0.05);
@@ -1095,4 +1112,45 @@ select.glass-input option {
   .auth-side-form { width: 100%; border-left: none; padding: 2rem; }
   .brand-content h1 { font-size: 3rem; }
   .auth-stats-container { display: none; }
+}
 
+/* ── Shimmer Loading Effect ── */
+.shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 20px;
+  min-height: 180px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+/* ── Admin Controls ── */
+.admin-control-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--border); background: rgba(0,212,255,0.1);
+  color: var(--accent); display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+}
+.admin-control-btn:hover { background: var(--accent); color: var(--primary); box-shadow: var(--glow); }
+.admin-control-btn.btn-minus:hover { background: #ff4d6d; color: #fff; box-shadow: 0 0 15px rgba(255,77,109,0.4); border-color: #ff4d6d; }
+
+.admin-badge {
+  background: rgba(0,212,255,0.15); border: 1px solid var(--accent);
+  color: var(--accent); font-size: 0.65rem; font-weight: 800;
+  padding: 2px 6px; border-radius: 4px; text-transform: uppercase;
+  margin-left: 8px; vertical-align: middle;
+}
+
+.rank-trend-up { color: #00ff94; font-size: 0.75rem; }
+.rank-trend-down { color: #ff4d6d; font-size: 0.75rem; }
+
+[data-admin-only="true"] {
+  position: relative;
+}
+.analyst-disabled {
+  filter: grayscale(0.8) opacity(0.6);
+  cursor: not-allowed !important;
+}

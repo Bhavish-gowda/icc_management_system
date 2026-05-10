@@ -95,9 +95,12 @@
         <h1 class="hero-title" style="font-size: 1.8rem; margin-bottom: 4px;">Players <span>Directory</span></h1>
         <p class="hero-subtitle mb-0">Manage player profiles, statistics, and team assignments.</p>
       </div>
-      <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addPlayerModal">
-        <i class="fas fa-plus"></i> Add Player
-      </button>
+        <div class="d-flex gap-2">
+        <button class="btn-outline-custom"><i class="fas fa-filter"></i> Filter</button>
+        <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addPlayerModal" data-admin-only="true">
+            <i class="fas fa-plus"></i> Add Player
+        </button>
+        </div>
     </div>
 
     <div class="content-card animate-in delay-1">
@@ -134,7 +137,7 @@
               <th class="text-end">Matches</th>
               <th class="text-end">Runs</th>
               <th class="text-end">Wickets</th>
-              <th class="text-end">Actions</th>
+              <th class="text-end" data-admin-only="true">Actions</th>
             </tr>
           </thead>
           <tbody id="playersTableBody">
@@ -381,6 +384,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/script.js"></script>
 </body>
 
