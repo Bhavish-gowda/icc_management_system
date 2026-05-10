@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Performance Analytics — ICC Cricket Management System</title>
+<meta name="description" content="Advanced cricket performance analytics and trends."/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .form-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .form-w { background: rgba(0, 255, 148, 0.2); color: #00ff94; border: 1px solid rgba(0, 255, 148, 0.4); }
+  .form-l { background: rgba(255, 77, 109, 0.2); color: #ff4d6d; border: 1px solid rgba(255, 77, 109, 0.4); }
+  .form-d { background: rgba(127, 163, 192, 0.2); color: var(--muted); border: 1px solid rgba(127, 163, 192, 0.4); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ PAGE LOADER ═══════════════ -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
+  </div>
+
+  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
+    <a href="index.html" class="nav-link-custom" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="nav-link-custom" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="nav-link-custom" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <a href="rankings.html" class="nav-link-custom" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+  </div>
+
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
+    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="live-badge mb-3">
+    <span class="live-dot"></span> LIVE MATCH
+    <span id="liveTicker" style="font-size:.7rem;color:var(--text);margin-left:6px;">Loading…</span>
+  </div>
+
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+  <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="performance.html" class="sidebar-link active" data-page="performance"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="statistics.html" class="sidebar-link" data-page="statistics"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link" data-page="schedule"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link" data-page="tournaments"><i class="fas fa-medal"></i> Tournaments</a>
+
+  <span class="sidebar-section-title">Management</span>
+  <a href="teams.html" class="sidebar-link" data-page="teams"><i class="fas fa-users"></i> Teams</a>
+  <a href="search.html" class="sidebar-link" data-page="search"><i class="fas fa-search"></i> Search</a>
+  <a href="settings.html" class="sidebar-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
+
+  <div class="sidebar-footer">
+    <a href="about.html" class="sidebar-link" data-page="about"><i class="fas fa-info-circle"></i> About</a>
+    <a href="#" class="sidebar-link" style="color:#ff6b8a"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+<main class="main-content" id="mainContent">
+  
+  <div class="d-flex align-items-center justify-content-between mb-4 animate-in">
+    <div>
+      <h1 class="hero-title mb-1" style="font-size: 1.8rem;">Performance <span>Analytics</span></h1>
+      <p class="hero-subtitle mb-0">Deep dive into team and player performance trends.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <select class="custom-input py-2" id="formatFilter" style="font-size: 0.85rem;">
+        <option value="odi">ODI Format</option>
+        <option value="t20">T20I Format</option>
+        <option value="test">Test Format</option>
+      </select>
+      <button class="btn-primary-custom py-2"><i class="fas fa-download"></i> Export</button>
+    </div>
+  </div>
+
+  <!-- Performance Overview Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 animate-in delay-1">
+      <div class="stat-card">
+        <div class="stat-label">Win Ratio (Last 10)</div>
+        <div class="stat-value text-accent">80%</div>
+        <div class="mt-2 d-flex">
+          <span class="form-indicator form-w">W</span>
+          <span class="form-indicator form-w">W</span>
+          <span class="form-indicator form-l">L</span>
+          <span class="form-indicator form-w">W</span>
+          <span class="form-indicator form-w">W</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 animate-in delay-2">
+      <div class="stat-card">
+        <div class="stat-label">Avg Runs per Over</div>
+        <div class="stat-value" style="color: #00ff94;">5.84</div>
+        <div class="stat-progress mt-3"><div class="stat-progress-bar" data-width="72"></div></div>
+      </div>
+    </div>
+    <div class="col-md-3 animate-in delay-3">
+      <div class="stat-card">
+        <div class="stat-label">Bowling Strike Rate</div>
+        <div class="stat-value" style="color: #fb923c;">32.4</div>
+        <div class="stat-progress mt-3"><div class="stat-progress-bar" data-width="58"></div></div>
+      </div>
+    </div>
+    <div class="col-md-3 animate-in delay-4">
+      <div class="stat-card">
+        <div class="stat-label">Boundaries / Match</div>
+        <div class="stat-value" style="color: #a855f7;">42</div>
+        <div class="stat-progress mt-3"><div class="stat-progress-bar" data-width="85"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <!-- Win/Loss Trend -->
+    <div class="col-lg-8 animate-in delay-2">
+      <div class="content-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="section-title mb-0" style="font-size:.9rem"><i class="fas fa-chart-line" style="color:var(--accent)"></i> Win/Loss Probability Trend</h3>
+          <div class="d-flex gap-2">
+            <span class="badge-rank" style="width:auto; padding: 0 10px; border-radius: 4px; font-size: 0.7rem; background: rgba(0,212,255,0.1); color: var(--accent);">India</span>
+            <span class="badge-rank" style="width:auto; padding: 0 10px; border-radius: 4px; font-size: 0.7rem; background: rgba(255,255,255,0.05); color: var(--muted);">Australia</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="performanceChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Comparison -->
+    <div class="col-lg-4 animate-in delay-3">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.9rem"><i class="fas fa-balance-scale" style="color:#fbbf24"></i> Format Efficiency</h3>
+        <div class="py-3">
+          <div class="d-flex justify-content-between mb-2">
+            <span style="font-size: 0.85rem;">ODI Win %</span>
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent);">74%</span>
+          </div>
+          <div class="stat-progress mb-4" style="height: 6px;"><div class="stat-progress-bar" data-width="74"></div></div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span style="font-size: 0.85rem;">T20I Win %</span>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #00ff94;">82%</span>
+          </div>
+          <div class="stat-progress mb-4" style="height: 6px;"><div class="stat-progress-bar" data-width="82" style="background:#00ff94"></div></div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span style="font-size: 0.85rem;">Test Win %</span>
+            <span style="font-size: 0.85rem; font-weight: 700; color: #fb923c;">65%</span>
+          </div>
+          <div class="stat-progress mb-4" style="height: 6px;"><div class="stat-progress-bar" data-width="65" style="background:#fb923c"></div></div>
+        </div>
+
+        <div class="activity-item mt-2">
+          <div class="activity-info">
+            <div class="activity-title" style="font-size: 0.8rem;">Highest Run Rate</div>
+            <div class="activity-sub">6.42 vs South Africa</div>
+          </div>
+          <div class="text-accent" style="font-weight: 700;">+0.4</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Details -->
+  <div class="row g-3 mt-1">
+    <div class="col-md-6 animate-in delay-4">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.9rem"><i class="fas fa-baseball-bat-ball" style="color:var(--accent2)"></i> Batting Aggression Index</h3>
+        <div class="row text-center py-3">
+          <div class="col-4">
+            <div style="font-size: 1.2rem; font-weight: 800; color: var(--accent);">1.42</div>
+            <div style="font-size: 0.7rem; color: var(--muted);">Powerplay</div>
+          </div>
+          <div class="col-4">
+            <div style="font-size: 1.2rem; font-weight: 800; color: #00ff94;">0.98</div>
+            <div style="font-size: 0.7rem; color: var(--muted);">Middle Overs</div>
+          </div>
+          <div class="col-4">
+            <div style="font-size: 1.2rem; font-weight: 800; color: #ff4d6d;">2.15</div>
+            <div style="font-size: 0.7rem; color: var(--muted);">Death Overs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 animate-in delay-5">
+      <div class="content-card">
+        <h3 class="section-title" style="font-size:.9rem"><i class="fas fa-shield-halved" style="color:#fbbf24"></i> Bowling Economy Variance</h3>
+        <div class="chart-container" style="height: 100px;">
+           <canvas id="miniChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dashboard-footer">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Performance Analytics Module
+  </div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+<script>
+  // Performance Chart
+  const ctx = document.getElementById('performanceChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [{
+        label: 'Win Probability %',
+        data: [65, 59, 80, 81, 56, 55, 90],
+        borderColor: '#00d4ff',
+        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+        borderWidth: 3,
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#00d4ff',
+        pointBorderColor: 'rgba(255,255,255,0.1)',
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: { color: '#7fa3c0', font: { size: 10 } }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#7fa3c0', font: { size: 10 } }
+        }
+      }
+    }
+  });
+
+  // Mini Chart
+  const miniCtx = document.getElementById('miniChart').getContext('2d');
+  new Chart(miniCtx, {
+    type: 'bar',
+    data: {
+      labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+      datasets: [{
+        label: 'Economy',
+        data: [4.2, 5.1, 3.8, 6.2, 4.5, 4.9, 3.5, 5.5, 6.0, 4.1],
+        backgroundColor: '#fbbf24',
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { display: false },
+        x: { display: false }
+      }
+    }
+  });
+</script>
+</body>
+</html>

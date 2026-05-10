@@ -3,25 +3,80 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Search Results - ICC</title>
+<title>Global Search — ICC Cricket Management System</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link rel="stylesheet" href="css/style.css"/>
+<style>
+  .search-hero {
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,255,204,0.05));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .search-large-input {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .search-large-input input {
+    height: 60px;
+    font-size: 1.1rem;
+    padding-left: 3.5rem;
+    border-radius: 15px;
+    background: rgba(0,0,0,0.3);
+  }
+  .search-large-input i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: var(--accent);
+  }
+  .result-category {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .search-result-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .search-result-item:hover {
+    transform: translateX(8px);
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.1);
+  }
+</style>
 </head>
 <body>
 
-<!-- ═══════════════ PAGE LOADER ═══════════════ -->
 <div id="pageLoader" class="page-loader">
   <div class="loader-spinner"></div>
 </div>
 
-<!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- ═══════════════ NAVBAR ═══════════════ -->
 <nav class="navbar">
   <div class="d-flex align-items-center gap-3">
-    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;" aria-label="Toggle sidebar">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;">
       <i class="fas fa-bars"></i>
     </button>
     <a href="index.html" class="navbar-brand">
@@ -29,99 +84,184 @@
       <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
     </a>
   </div>
-
-  <!-- Desktop nav links -->
-  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
-    <a href="index.html" class="nav-link-custom" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
-    <a href="countries.html" class="nav-link-custom" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
-    <a href="players.html" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
-    <a href="matches.html" class="nav-link-custom" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
-    <a href="rankings.html" class="nav-link-custom" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
-  </div>
-
   <div class="navbar-right ms-auto">
-    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
-    <button class="notification-btn" id="notifBtn" aria-label="Notifications">
-      <i class="fas fa-bell fa-lg"></i>
-      <span class="notif-badge"></span>
-    </button>
-    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
     <div class="user-avatar">AD</div>
   </div>
 </nav>
 
-<!-- ═══════════════ SIDEBAR ═══════════════ -->
 <aside class="sidebar" id="sidebar">
+  <div class="live-badge mb-3">
+    <span class="live-dot"></span> LIVE MATCH
+    <span id="liveTicker" style="font-size:.7rem;color:var(--text);margin-left:6px;">Loading…</span>
+  </div>
+
   <span class="sidebar-section-title">Main Menu</span>
-  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard </a>
-  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
-  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
-  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
   <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
 
   <span class="sidebar-section-title">Analytics</span>
-  <a href="#" class="sidebar-link"><i class="fas fa-chart-line"></i> Performance</a>
-  <a href="#" class="sidebar-link"><i class="fas fa-chart-pie"></i> Statistics</a>
-  <a href="#" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="performance.html" class="sidebar-link" data-page="performance"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="statistics.html" class="sidebar-link" data-page="statistics"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link" data-page="schedule"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link" data-page="tournaments"><i class="fas fa-medal"></i> Tournaments</a>
 
   <span class="sidebar-section-title">Management</span>
-  <a href="#" class="sidebar-link"><i class="fas fa-users-gear"></i> Teams</a>
-  <a href="#" class="sidebar-link open-search active"><i class="fas fa-search"></i> Search</a>
-  <a href="#" class="sidebar-link"><i class="fas fa-sliders"></i> Settings</a>
+  <a href="teams.html" class="sidebar-link" data-page="teams"><i class="fas fa-users"></i> Teams</a>
+  <a href="search.html" class="sidebar-link active" data-page="search"><i class="fas fa-search"></i> Search</a>
+  <a href="settings.html" class="sidebar-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
 
   <div class="sidebar-footer">
-    <a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+    <a href="about.html" class="sidebar-link" data-page="about"><i class="fas fa-info-circle"></i> About</a>
+    <a href="#" class="sidebar-link" style="color:#ff6b8a"><i class="fas fa-right-from-bracket"></i> Logout</a>
   </div>
 </aside>
 
-<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
 <main class="main-content" id="mainContent">
   
-  <div class="mb-4 animate-in">
-    <h1 class="hero-title" style="font-size: 1.8rem; margin-bottom: 4px;">Search <span>Results</span></h1>
-    <p class="hero-subtitle mb-0">Showing results for: <strong id="searchQueryDisplay" class="text-accent">"..."</strong></p>
+  <div class="search-hero animate-in">
+    <h1 class="hero-title">Global <span>Cricket</span> Search</h1>
+    <p class="hero-subtitle">Find players, teams, matches or tournament records across the globe.</p>
+    
+    <div class="search-large-input">
+      <i class="fas fa-search"></i>
+      <input type="text" class="custom-input w-100" id="mainSearchInput" placeholder="Type to search... (Press '/' to focus)" autocomplete="off">
+    </div>
+    
+    <div class="mt-4 d-flex justify-content-center gap-2 flex-wrap">
+      <span class="search-tag" onclick="autoSearch('Virat Kohli')">Virat Kohli</span>
+      <span class="search-tag" onclick="autoSearch('World Cup')">World Cup</span>
+      <span class="search-tag" onclick="autoSearch('Australia')">Australia</span>
+      <span class="search-tag" onclick="autoSearch('ODI Rankings')">ODI Rankings</span>
+    </div>
   </div>
 
-  <div class="content-card animate-in delay-1">
-      <div class="d-flex justify-content-center py-5" id="searchState">
-          <div class="text-center">
-              <div class="spinner-border text-accent mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
-              <h5 class="text-muted">Searching global database...</h5>
-          </div>
-      </div>
-      
-      <div id="searchResults" class="d-none">
-          <!-- Populated by JS -->
-      </div>
+  <div id="searchState" class="animate-in delay-1">
+    <!-- Results will appear here -->
+     <div class="row" id="resultsGrid">
+       <div class="col-md-6 mb-4">
+         <span class="result-category">Popular Teams</span>
+         <a href="teams.html" class="search-result-item">
+           <div class="team-flag" style="width: 40px; height: 40px; background: rgba(0,212,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🇮🇳</div>
+           <div>
+             <div class="fw-700">India</div>
+             <div class="small text-muted">National Team · Rank #1</div>
+           </div>
+         </a>
+         <a href="teams.html" class="search-result-item">
+           <div class="team-flag" style="width: 40px; height: 40px; background: rgba(0,212,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🇦🇺</div>
+           <div>
+             <div class="fw-700">Australia</div>
+             <div class="small text-muted">National Team · Rank #2</div>
+           </div>
+         </a>
+       </div>
+       <div class="col-md-6 mb-4">
+         <span class="result-category">Recent Players</span>
+         <a href="players.html" class="search-result-item">
+           <div class="player-avatar" style="width: 40px; height: 40px;">VK</div>
+           <div>
+             <div class="fw-700">Virat Kohli</div>
+             <div class="small text-muted">India · Batter</div>
+           </div>
+         </a>
+         <a href="players.html" class="search-result-item">
+           <div class="player-avatar" style="width: 40px; height: 40px; color: #fb923c; border-color: #fb923c; background: rgba(251,146,60,0.1);">BA</div>
+           <div>
+             <div class="fw-700">Babar Azam</div>
+             <div class="small text-muted">Pakistan · Batter</div>
+           </div>
+         </a>
+       </div>
+     </div>
   </div>
 
-  <div class="dashboard-footer mt-5">
-    &copy; 2025 <span>ICC Cricket Management System</span>
+  <div id="loadingState" class="text-center py-5 d-none">
+    <div class="spinner-border text-accent mb-3" role="status"></div>
+    <div class="text-muted">Searching the database...</div>
+  </div>
+
+  <div id="noResultsState" class="text-center py-5 d-none">
+    <i class="fas fa-search-minus fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">No matching records found</h4>
+    <p class="text-muted small">Try searching with different keywords</p>
+  </div>
+
+  <div class="dashboard-footer">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Global Search Engine
   </div>
 
 </main>
 
-<!-- ═══════════════ SEARCH MODAL ═══════════════ -->
-<div class="search-modal" id="searchModal">
-  <div class="search-box">
-    <form id="globalSearchForm" action="search.html" method="GET">
-        <div class="search-input-wrap">
-          <i class="fas fa-search search-icon-abs"></i>
-          <input type="text" name="q" class="search-input" id="searchInput" placeholder="Search players, countries, matches…" autocomplete="off"/>
-        </div>
-    </form>
-    <div class="d-flex gap-2 flex-wrap">
-      <span class="search-tag"><i class="fas fa-person-running fa-xs"></i> Players</span>
-      <span class="search-tag"><i class="fas fa-flag fa-xs"></i> Countries</span>
-      <span class="search-tag"><i class="fas fa-baseball-bat-ball fa-xs"></i> Matches</span>
-    </div>
-    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">
-      Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">Enter</kbd> to search or <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px;">ESC</kbd> to close
-    </div>
-  </div>
-</div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="js/script.js"></script>
+<script>
+  const searchInput = document.getElementById('mainSearchInput');
+  const resultsGrid = document.getElementById('resultsGrid');
+  const loadingState = document.getElementById('loadingState');
+  const noResultsState = document.getElementById('noResultsState');
+  const searchState = document.getElementById('searchState');
+
+  let searchTimeout;
+
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+    
+    if (query.length === 0) {
+      searchState.classList.remove('d-none');
+      loadingState.classList.add('d-none');
+      noResultsState.classList.add('d-none');
+      return;
+    }
+
+    // Show loading
+    searchState.classList.add('d-none');
+    loadingState.classList.remove('d-none');
+    noResultsState.classList.add('d-none');
+
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      performSearch(query);
+    }, 600);
+  });
+
+  function performSearch(query) {
+    loadingState.classList.add('d-none');
+    
+    // Demo search logic
+    if (query.toLowerCase().includes('xxx') || query.length > 20) {
+      noResultsState.classList.remove('d-none');
+    } else {
+      searchState.classList.remove('d-none');
+      // In a real app, we would update the resultsGrid here
+      showToast(`Found results for "${query}"`, 'success');
+    }
+  }
+
+  function autoSearch(q) {
+    searchInput.value = q;
+    searchInput.dispatchEvent(new Event('input'));
+  }
+
+  // Keyboard shortcut '/'
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+  });
+
+  // Handle URL params
+  window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q) {
+      searchInput.value = q;
+      performSearch(q);
+    }
+  });
+</script>
 </body>
 </html>

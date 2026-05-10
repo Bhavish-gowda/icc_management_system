@@ -31,11 +31,10 @@
     </a>
   </div>
 
-  <!-- Desktop nav links -->
   <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
     <a href="index.html" class="nav-link-custom" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
-    <a href="countries.html" class="nav-link-custom active" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
-    <a href="#" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="countries.html" class="nav-link-custom" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="nav-link-custom" data-page="players"><i class="fas fa-person-running"></i> Players</a>
     <a href="matches.html" class="nav-link-custom" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
     <a href="rankings.html" class="nav-link-custom" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
   </div>
@@ -54,24 +53,26 @@
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <aside class="sidebar" id="sidebar">
   <span class="sidebar-section-title">Main Menu</span>
-  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard </a>
-  <a href="countries.html" class="sidebar-link active" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
   <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
   <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
   <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
 
   <span class="sidebar-section-title">Analytics</span>
-  <a href="#" class="sidebar-link"><i class="fas fa-chart-line"></i> Performance</a>
-  <a href="#" class="sidebar-link"><i class="fas fa-chart-pie"></i> Statistics</a>
-  <a href="#" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="performance.html" class="sidebar-link" data-page="performance"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="statistics.html" class="sidebar-link" data-page="statistics"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link" data-page="schedule"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link" data-page="tournaments"><i class="fas fa-medal"></i> Tournaments</a>
 
   <span class="sidebar-section-title">Management</span>
-  <a href="#" class="sidebar-link"><i class="fas fa-users-gear"></i> Teams</a>
-  <a href="search.html" class="sidebar-link open-search"><i class="fas fa-search"></i> Search</a>
-  <a href="#" class="sidebar-link"><i class="fas fa-sliders"></i> Settings</a>
+  <a href="teams.html" class="sidebar-link" data-page="teams"><i class="fas fa-users"></i> Teams</a>
+  <a href="search.html" class="sidebar-link" data-page="search"><i class="fas fa-search"></i> Search</a>
+  <a href="settings.html" class="sidebar-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
 
   <div class="sidebar-footer">
-    <a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a>
+    <a href="about.html" class="sidebar-link" data-page="about"><i class="fas fa-info-circle"></i> About</a>
+    <a href="#" class="sidebar-link" style="color:#ff6b8a"><i class="fas fa-right-from-bracket"></i> Logout</a>
   </div>
 </aside>
 
@@ -102,6 +103,7 @@
               <thead>
                   <tr>
                       <th>Country</th>
+                      <th>Format</th>
                       <th>Captain</th>
                       <th>Coach</th>
                       <th class="text-center">ICC Rank</th>
@@ -112,10 +114,10 @@
                   <tr class="animate-row">
                       <td>
                           <div class="d-flex align-items-center gap-2">
-                              <span class="team-flag">🇮🇳</span>
                               <span class="fw-bold">India</span>
                           </div>
                       </td>
+                      <td>All Formats</td>
                       <td>Rohit Sharma</td>
                       <td>Rahul Dravid</td>
                       <td class="text-center"><span class="badge-rank gold">1</span></td>
@@ -127,10 +129,10 @@
                   <tr class="animate-row" style="animation-delay: 0.1s;">
                       <td>
                           <div class="d-flex align-items-center gap-2">
-                              <span class="team-flag">🇦🇺</span>
                               <span class="fw-bold">Australia</span>
                           </div>
                       </td>
+                      <td>All Formats</td>
                       <td>Pat Cummins</td>
                       <td>Andrew McDonald</td>
                       <td class="text-center"><span class="badge-rank silver">2</span></td>
@@ -142,10 +144,10 @@
                   <tr class="animate-row" style="animation-delay: 0.2s;">
                       <td>
                           <div class="d-flex align-items-center gap-2">
-                              <span class="team-flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
                               <span class="fw-bold">England</span>
                           </div>
                       </td>
+                      <td>All Formats</td>
                       <td>Jos Buttler</td>
                       <td>Matthew Mott</td>
                       <td class="text-center"><span class="badge-rank bronze">3</span></td>
@@ -157,10 +159,10 @@
                   <tr class="animate-row" style="animation-delay: 0.3s;">
                       <td>
                           <div class="d-flex align-items-center gap-2">
-                              <span class="team-flag">🇵🇰</span>
                               <span class="fw-bold">Pakistan</span>
                           </div>
                       </td>
+                      <td>All Formats</td>
                       <td>Babar Azam</td>
                       <td>Gary Kirsten</td>
                       <td class="text-center"><span class="badge-rank">5</span></td>
@@ -172,10 +174,10 @@
                   <tr class="animate-row" style="animation-delay: 0.4s;">
                       <td>
                           <div class="d-flex align-items-center gap-2">
-                              <span class="team-flag">🇳🇿</span>
                               <span class="fw-bold">New Zealand</span>
                           </div>
                       </td>
+                      <td>All Formats</td>
                       <td>Kane Williamson</td>
                       <td>Gary Stead</td>
                       <td class="text-center"><span class="badge-rank">4</span></td>
@@ -212,31 +214,37 @@
         <form id="addCountryForm">
           <div class="mb-3">
             <label class="form-label">Country Name</label>
-            <input type="text" class="form-control custom-input" placeholder="e.g. South Africa" required>
+            <input type="text" id="cName" class="form-control custom-input" placeholder="e.g. South Africa" required>
           </div>
           <div class="mb-3">
-            <label class="form-label">Flag Emoji</label>
-            <input type="text" class="form-control custom-input" placeholder="e.g. 🇿🇦" required>
+            <label class="form-label">Cricket Format</label>
+            <select id="cFormat" class="form-select custom-input" required>
+                <option value="" disabled selected>Select Format</option>
+                <option value="ODI">ODI</option>
+                <option value="T20">T20</option>
+                <option value="Test">Test</option>
+                <option value="All Formats">All Formats</option>
+            </select>
           </div>
           <div class="row g-3 mb-3">
               <div class="col-md-6">
                   <label class="form-label">Captain</label>
-                  <input type="text" class="form-control custom-input" placeholder="Enter captain name">
+                  <input type="text" id="cCaptain" class="form-control custom-input" placeholder="Enter captain name">
               </div>
               <div class="col-md-6">
                   <label class="form-label">Head Coach</label>
-                  <input type="text" class="form-control custom-input" placeholder="Enter coach name">
+                  <input type="text" id="cCoach" class="form-control custom-input" placeholder="Enter coach name">
               </div>
           </div>
           <div class="mb-3">
               <label class="form-label">Initial ICC Rank</label>
-              <input type="number" class="form-control custom-input" placeholder="e.g. 6" min="1">
+              <input type="number" id="cRank" class="form-control custom-input" placeholder="e.g. 6" min="1">
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary-custom" onclick="document.getElementById('addCountryModal').querySelector('.btn-close').click(); showToast('Country added successfully!', 'success');">Save Country</button>
+        <button type="button" class="btn btn-primary-custom">Save Country</button>
       </div>
     </div>
   </div>

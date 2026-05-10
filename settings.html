@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Settings — ICC Cricket Management System</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+  .settings-section {
+    margin-bottom: 2rem;
+  }
+  .settings-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
+  .accent-color-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .accent-color-btn.active {
+    border-color: #fff;
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ PAGE LOADER ═══════════════ -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar">
+  <div class="d-flex align-items-center gap-3">
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
+  </div>
+  <div class="navbar-right ms-auto">
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i> Search</button>
+    <div class="user-avatar">AD</div>
+  </div>
+</nav>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="live-badge mb-3">
+    <span class="live-dot"></span> LIVE MATCH
+    <span id="liveTicker" style="font-size:.7rem;color:var(--text);margin-left:6px;">Loading…</span>
+  </div>
+
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+  <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
+
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="performance.html" class="sidebar-link" data-page="performance"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="statistics.html" class="sidebar-link" data-page="statistics"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link" data-page="schedule"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link" data-page="tournaments"><i class="fas fa-medal"></i> Tournaments</a>
+
+  <span class="sidebar-section-title">Management</span>
+  <a href="teams.html" class="sidebar-link" data-page="teams"><i class="fas fa-users"></i> Teams</a>
+  <a href="search.html" class="sidebar-link" data-page="search"><i class="fas fa-search"></i> Search</a>
+  <a href="settings.html" class="sidebar-link active" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
+
+  <div class="sidebar-footer">
+    <a href="about.html" class="sidebar-link" data-page="about"><i class="fas fa-info-circle"></i> About</a>
+    <a href="#" class="sidebar-link" style="color:#ff6b8a"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+<main class="main-content" id="mainContent">
+  
+  <div class="animate-in mb-4">
+    <h1 class="hero-title" style="font-size: 1.8rem;">System <span>Settings</span></h1>
+    <p class="hero-subtitle">Customize your dashboard experience and preferences.</p>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      
+      <!-- Appearance -->
+      <section class="settings-section animate-in delay-1">
+        <h3 class="section-title" style="font-size: 1rem;"><i class="fas fa-palette me-2" style="color:var(--accent)"></i> Appearance</h3>
+        <div class="settings-card">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <div class="fw-600 mb-1">Dark Mode</div>
+              <div class="text-muted small">Switch between dark and light themes.</div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="themeSwitch" checked style="width: 40px; height: 20px; cursor: pointer;">
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="fw-600 mb-2">Accent Color</div>
+            <div class="d-flex gap-3">
+              <div class="accent-color-btn active" style="background: #00d4ff;" data-color="#00d4ff"></div>
+              <div class="accent-color-btn" style="background: #00ff94;" data-color="#00ff94"></div>
+              <div class="accent-color-btn" style="background: #a855f7;" data-color="#a855f7"></div>
+              <div class="accent-color-btn" style="background: #fb923c;" data-color="#fb923c"></div>
+              <div class="accent-color-btn" style="background: #ff4d6d;" data-color="#ff4d6d"></div>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="fw-600 mb-1">Sidebar Collapsed</div>
+              <div class="text-muted small">Keep sidebar collapsed by default on large screens.</div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="sidebarCollapseSwitch" style="width: 40px; height: 20px; cursor: pointer;">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications -->
+      <section class="settings-section animate-in delay-2">
+        <h3 class="section-title" style="font-size: 1rem;"><i class="fas fa-bell me-2" style="color:#fbbf24"></i> Notifications</h3>
+        <div class="settings-card">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+              <div class="fw-600 mb-1">Match Alerts</div>
+              <div class="text-muted small">Get notified when a match starts or a wicket falls.</div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" checked style="width: 40px; height: 20px; cursor: pointer;">
+            </div>
+          </div>
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="fw-600 mb-1">News & Updates</div>
+              <div class="text-muted small">Weekly summary of cricket world news.</div>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" style="width: 40px; height: 20px; cursor: pointer;">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- General -->
+      <section class="settings-section animate-in delay-3">
+        <h3 class="section-title" style="font-size: 1rem;"><i class="fas fa-globe me-2" style="color:var(--accent2)"></i> Regional</h3>
+        <div class="settings-card">
+          <div class="mb-3">
+            <label class="form-label">Language</label>
+            <select class="custom-input w-100">
+              <option>English (US)</option>
+              <option>English (UK)</option>
+              <option>Hindi (हिन्दी)</option>
+              <option>Spanish (Español)</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Timezone</label>
+            <select class="custom-input w-100">
+              <option>(GMT+05:30) India Standard Time</option>
+              <option>(GMT+00:00) UTC</option>
+              <option>(GMT-05:00) Eastern Time</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="col-lg-4">
+      <!-- Profile -->
+      <section class="settings-section animate-in delay-2">
+        <h3 class="section-title" style="font-size: 1rem;"><i class="fas fa-user-circle me-2" style="color:var(--accent)"></i> Profile</h3>
+        <div class="settings-card text-center">
+          <div class="user-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 1.5rem;">AD</div>
+          <h5 class="mb-1">Admin Dashboard</h5>
+          <p class="text-muted small mb-4">admin@icccricket.com</p>
+          <button class="btn-outline-custom w-100 py-2 mb-2"><i class="fas fa-edit"></i> Edit Profile</button>
+          <button class="btn-primary-custom w-100 py-2"><i class="fas fa-shield-alt"></i> Security</button>
+        </div>
+      </section>
+
+      <!-- Storage Info -->
+      <div class="settings-card animate-in delay-3" style="background: rgba(0,212,255,0.03);">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <i class="fas fa-database text-accent"></i>
+          <span class="fw-600 small">Local Storage</span>
+        </div>
+        <div class="stat-progress mb-2" style="height: 6px;"><div class="stat-progress-bar" data-width="12"></div></div>
+        <div class="text-muted" style="font-size: 0.7rem;">Using 1.2 MB of 10 MB limit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-footer">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Settings Module
+  </div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+<script>
+  // Settings Logic
+  const themeSwitch = document.getElementById('themeSwitch');
+  const accentBtns = document.querySelectorAll('.accent-color-btn');
+
+  // Load saved settings
+  const savedAccent = localStorage.getItem('accentColor') || '#00d4ff';
+  document.documentElement.style.setProperty('--accent', savedAccent);
+  accentBtns.forEach(btn => {
+    if (btn.dataset.color === savedAccent) {
+      accentBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  });
+
+  // Theme switch (sync with script.js logic)
+  themeSwitch.addEventListener('change', () => {
+    document.getElementById('themeToggle').click();
+  });
+
+  // Accent color switch
+  accentBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      accentBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const color = btn.dataset.color;
+      document.documentElement.style.setProperty('--accent', color);
+      localStorage.setItem('accentColor', color);
+      showToast(`Accent color updated to ${color}`, 'success');
+    });
+  });
+</script>
+</body>
+</html>

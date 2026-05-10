@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — ICC Cricket Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <div class="auth-wrapper">
+    <!-- Left Side: Branding (Smaller on signup to focus on form) -->
+    <div class="auth-side-brand">
+      <div class="particles-overlay"></div>
+      <div class="brand-content">
+        <div class="brand-icon-box">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <h1 class="animate-in">Join the <span>Elite</span></h1>
+        <div class="brand-tagline animate-in delay-1">Powering Modern Cricket Analytics</div>
+
+        <div class="auth-stats-container animate-in delay-2">
+          <div class="auth-stat-mini">
+            <span class="stat-val">120+</span>
+            <span class="stat-lab">Live Matches</span>
+          </div>
+          <div class="auth-stat-mini">
+            <span class="stat-val">20+</span>
+            <span class="stat-lab">Countries</span>
+          </div>
+          <div class="auth-stat-mini">
+            <span class="stat-val">Real-Time</span>
+            <span class="stat-lab">Rankings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Form -->
+    <div class="auth-side-form">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2>Create Account</h2>
+          <p>Register as an Admin or Analyst</p>
+        </div>
+
+        <form id="signupForm">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <div class="glass-input-group mb-0">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" class="glass-input" placeholder="John Doe" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="glass-input-group mb-0">
+                <label for="signupRole">Register As</label>
+                <select id="signupRole" class="glass-input" required>
+                  <option value="" disabled selected>Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Analyst">Analyst</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-input-group">
+            <label for="signupEmail">Email Address</label>
+            <input type="email" id="signupEmail" class="glass-input" placeholder="name@example.com" required>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <div class="glass-input-group mb-0">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" class="glass-input" placeholder="••••••••" required>
+                <div class="strength-meter">
+                  <div class="strength-bar" id="strengthBar"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="glass-input-group mb-0">
+                <label for="confirmPassword">Confirm</label>
+                <input type="password" id="confirmPassword" class="glass-input" placeholder="••••••••" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="glass-input-group mb-0">
+                <label for="country">Country</label>
+                <input type="text" id="country" class="glass-input" placeholder="India" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="glass-input-group mb-0">
+                <label for="age">Age</label>
+                <input type="number" id="age" class="glass-input" placeholder="25" min="18" required>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="auth-btn" id="signupBtn">
+            <span>Create My Account</span>
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          Already have an account? <a href="login.html">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+
+</html>

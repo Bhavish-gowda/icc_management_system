@@ -1,196 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Teams - ICC Cricket</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>National Teams — ICC Cricket Management System</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <link rel="stylesheet" href="css/style.css"/>
+<style>
+  .team-card-premium {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+  }
+  .team-card-premium:hover {
+    transform: translateY(-10px);
+    border-color: var(--accent);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), var(--glow);
+  }
+  .team-card-header {
+    height: 100px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,255,204,0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+  .team-card-body { padding: 1.5rem; }
+  .team-rank-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+    color: var(--accent);
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid var(--border);
+  }
+</style>
 </head>
 <body>
-<div id="pageLoader" class="page-loader"><div class="loader-spinner"></div></div>
+
+<div id="pageLoader" class="page-loader">
+  <div class="loader-spinner"></div>
+</div>
+
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <nav class="navbar">
   <div class="d-flex align-items-center gap-3">
-    <button class="sidebar-toggle btn p-0 border-0" style="color:var(--muted);font-size:1.2rem;"><i class="fas fa-bars"></i></button>
-    <a href="index.html" class="navbar-brand"><div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div><span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span></a>
-  </div>
-  <div class="navbar-links-desktop d-none d-lg-flex align-items-center gap-1 ms-3">
-    <a href="index.html" class="nav-link-custom"><i class="fas fa-gauge-high"></i> Dashboard</a>
-    <a href="countries.html" class="nav-link-custom"><i class="fas fa-flag"></i> Countries</a>
-    <a href="players.html" class="nav-link-custom"><i class="fas fa-person-running"></i> Players</a>
-    <a href="teams.html" class="nav-link-custom active"><i class="fas fa-users"></i> Teams</a>
-    <a href="matches.html" class="nav-link-custom"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+    <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;">
+      <i class="fas fa-bars"></i>
+    </button>
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+      <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+    </a>
   </div>
   <div class="navbar-right ms-auto">
-    <button class="btn-search-nav"><a href="search.html" style="color:inherit;text-decoration:none;"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span></a></button>
-    <button class="notification-btn" id="notifBtn"><i class="fas fa-bell fa-lg"></i><span class="notif-badge"></span></button>
-    <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+    <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i> Search</button>
     <div class="user-avatar">AD</div>
   </div>
 </nav>
+
 <aside class="sidebar" id="sidebar">
-  <span class="sidebar-section-title">Main Menu</span>
-  <a href="index.html" class="sidebar-link"><i class="fas fa-gauge-high"></i> Dashboard</a>
-  <a href="countries.html" class="sidebar-link"><i class="fas fa-flag"></i> Countries <span class="sidebar-badge">16</span></a>
-  <a href="players.html" class="sidebar-link"><i class="fas fa-person-running"></i> Players <span class="sidebar-badge">248</span></a>
-  <a href="teams.html" class="sidebar-link active"><i class="fas fa-users"></i> Teams</a>
-  <a href="matches.html" class="sidebar-link"><i class="fas fa-baseball-bat-ball"></i> Matches <span class="sidebar-badge">94</span></a>
-  <a href="rankings.html" class="sidebar-link"><i class="fas fa-trophy"></i> Rankings</a>
-  <span class="sidebar-section-title">Analytics</span>
-  <a href="statistics.html" class="sidebar-link"><i class="fas fa-chart-bar"></i> Statistics</a>
-  <a href="schedule.html" class="sidebar-link"><i class="fas fa-calendar-days"></i> Schedule</a>
-  <a href="tournaments.html" class="sidebar-link"><i class="fas fa-medal"></i> Tournaments</a>
-  <span class="sidebar-section-title">More</span>
-  <a href="search.html" class="sidebar-link"><i class="fas fa-search"></i> Search</a>
-  <a href="about.html" class="sidebar-link"><i class="fas fa-info-circle"></i> About</a>
-  <div class="sidebar-footer"><a href="#" class="sidebar-link"><i class="fas fa-right-from-bracket"></i> Logout</a></div>
-</aside>
-<main class="main-content" id="mainContent">
-  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 animate-in">
-    <div>
-      <h1 class="hero-title" style="font-size:1.8rem;margin-bottom:4px;">ICC <span>Teams</span></h1>
-      <p class="hero-subtitle mb-0">Full Member nations, captains, coaches, and squad previews.</p>
-    </div>
-    <input type="text" id="teamSearch" class="form-control custom-input" style="max-width:260px;" placeholder="Search teams…">
+  <div class="live-badge mb-3">
+    <span class="live-dot"></span> LIVE MATCH
+    <span id="liveTicker" style="font-size:.7rem;color:var(--text);margin-left:6px;">Loading…</span>
   </div>
 
-  <div class="row g-4 animate-in delay-1" id="teamsGrid">
+  <span class="sidebar-section-title">Main Menu</span>
+  <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+  <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+  <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+  <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+  <a href="rankings.html" class="sidebar-link" data-page="rankings"><i class="fas fa-trophy"></i> Rankings</a>
 
-    <div class="col-sm-6 col-xl-4 team-card-wrap" data-team="india">
-      <div class="content-card team-profile-card">
-        <div class="team-card-header" style="background:linear-gradient(135deg,rgba(255,153,51,.15),rgba(19,136,8,.1));border-radius:10px;padding:1rem;margin-bottom:1rem;text-align:center;">
-          <div style="font-size:3.5rem;line-height:1;margin-bottom:.5rem;">🇮🇳</div>
-          <h4 style="margin:0;font-weight:800;">India</h4>
-          <div style="font-size:.78rem;color:var(--muted);">Full Member · Rank #1 ODI</div>
-        </div>
-        <div class="d-flex justify-content-between mb-3">
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:var(--accent);">292</div><div style="font-size:.72rem;color:var(--muted)">Matches</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#00ff94;">63%</div><div style="font-size:.72rem;color:var(--muted)">Win Rate</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#fbbf24;">6</div><div style="font-size:.72rem;color:var(--muted)">ICC Titles</div></div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center" style="font-size:.82rem;padding-top:.75rem;border-top:1px solid var(--border);">
-          <div><span style="color:var(--muted)">Captain:</span> <strong>Rohit Sharma</strong></div>
-          <div><span style="color:var(--muted)">Coach:</span> <strong>G. Kirsten</strong></div>
+  <span class="sidebar-section-title">Analytics</span>
+  <a href="performance.html" class="sidebar-link" data-page="performance"><i class="fas fa-chart-line"></i> Performance</a>
+  <a href="statistics.html" class="sidebar-link" data-page="statistics"><i class="fas fa-chart-bar"></i> Statistics</a>
+  <a href="schedule.html" class="sidebar-link" data-page="schedule"><i class="fas fa-calendar-days"></i> Schedule</a>
+  <a href="tournaments.html" class="sidebar-link" data-page="tournaments"><i class="fas fa-medal"></i> Tournaments</a>
+
+  <span class="sidebar-section-title">Management</span>
+  <a href="teams.html" class="sidebar-link active" data-page="teams"><i class="fas fa-users"></i> Teams</a>
+  <a href="search.html" class="sidebar-link" data-page="search"><i class="fas fa-search"></i> Search</a>
+  <a href="settings.html" class="sidebar-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
+
+  <div class="sidebar-footer">
+    <a href="about.html" class="sidebar-link" data-page="about"><i class="fas fa-info-circle"></i> About</a>
+    <a href="#" class="sidebar-link" style="color:#ff6b8a"><i class="fas fa-right-from-bracket"></i> Logout</a>
+  </div>
+</aside>
+
+<main class="main-content" id="mainContent">
+  
+  <div class="animate-in mb-4">
+    <h1 class="hero-title" style="font-size: 1.8rem;">National <span>Teams</span></h1>
+    <p class="hero-subtitle">Profile of all ICC full member nations and their recent records.</p>
+  </div>
+
+  <div class="row g-4 mb-5">
+    
+    <!-- India -->
+    <div class="col-md-6 col-lg-4 animate-in delay-1">
+      <div class="team-card-premium" onclick="showTeamDetail('India')">
+        <div class="team-rank-badge">Rank #1</div>
+        <div class="team-card-header">🇮🇳</div>
+        <div class="team-card-body">
+          <h4 class="mb-1">India</h4>
+          <div class="text-muted small mb-3">Captain: Rohit Sharma</div>
+          <div class="row text-center g-2 mb-3">
+            <div class="col-4">
+              <div class="small text-muted">Win %</div>
+              <div class="fw-700">72.4</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">ODI Cups</div>
+              <div class="fw-700">2</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">T20 Cups</div>
+              <div class="fw-700">2</div>
+            </div>
+          </div>
+          <div class="stat-progress" style="height: 4px;"><div class="stat-progress-bar" data-width="85"></div></div>
         </div>
       </div>
     </div>
 
-    <div class="col-sm-6 col-xl-4 team-card-wrap" data-team="australia">
-      <div class="content-card team-profile-card">
-        <div class="team-card-header" style="background:linear-gradient(135deg,rgba(255,205,0,.12),rgba(0,32,96,.1));border-radius:10px;padding:1rem;margin-bottom:1rem;text-align:center;">
-          <div style="font-size:3.5rem;line-height:1;margin-bottom:.5rem;">🇦🇺</div>
-          <h4 style="margin:0;font-weight:800;">Australia</h4>
-          <div style="font-size:.78rem;color:var(--muted);">Full Member · Rank #2 ODI</div>
-        </div>
-        <div class="d-flex justify-content-between mb-3">
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:var(--accent);">278</div><div style="font-size:.72rem;color:var(--muted)">Matches</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#00ff94;">61%</div><div style="font-size:.72rem;color:var(--muted)">Win Rate</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#fbbf24;">8</div><div style="font-size:.72rem;color:var(--muted)">ICC Titles</div></div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center" style="font-size:.82rem;padding-top:.75rem;border-top:1px solid var(--border);">
-          <div><span style="color:var(--muted)">Captain:</span> <strong>Pat Cummins</strong></div>
-          <div><span style="color:var(--muted)">Coach:</span> <strong>A. McDonald</strong></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-sm-6 col-xl-4 team-card-wrap" data-team="england">
-      <div class="content-card team-profile-card">
-        <div class="team-card-header" style="background:linear-gradient(135deg,rgba(200,16,46,.1),rgba(0,36,125,.1));border-radius:10px;padding:1rem;margin-bottom:1rem;text-align:center;">
-          <div style="font-size:3.5rem;line-height:1;margin-bottom:.5rem;">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
-          <h4 style="margin:0;font-weight:800;">England</h4>
-          <div style="font-size:.78rem;color:var(--muted);">Full Member · Rank #3 ODI</div>
-        </div>
-        <div class="d-flex justify-content-between mb-3">
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:var(--accent);">265</div><div style="font-size:.72rem;color:var(--muted)">Matches</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#00ff94;">55%</div><div style="font-size:.72rem;color:var(--muted)">Win Rate</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#fbbf24;">4</div><div style="font-size:.72rem;color:var(--muted)">ICC Titles</div></div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center" style="font-size:.82rem;padding-top:.75rem;border-top:1px solid var(--border);">
-          <div><span style="color:var(--muted)">Captain:</span> <strong>Ben Stokes</strong></div>
-          <div><span style="color:var(--muted)">Coach:</span> <strong>B. McCullum</strong></div>
+    <!-- Australia -->
+    <div class="col-md-6 col-lg-4 animate-in delay-2">
+      <div class="team-card-premium" onclick="showTeamDetail('Australia')">
+        <div class="team-rank-badge">Rank #2</div>
+        <div class="team-card-header">🇦🇺</div>
+        <div class="team-card-body">
+          <h4 class="mb-1">Australia</h4>
+          <div class="text-muted small mb-3">Captain: Pat Cummins</div>
+          <div class="row text-center g-2 mb-3">
+            <div class="col-4">
+              <div class="small text-muted">Win %</div>
+              <div class="fw-700">68.9</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">ODI Cups</div>
+              <div class="fw-700">6</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">T20 Cups</div>
+              <div class="fw-700">1</div>
+            </div>
+          </div>
+          <div class="stat-progress" style="height: 4px;"><div class="stat-progress-bar" data-width="78"></div></div>
         </div>
       </div>
     </div>
 
-    <div class="col-sm-6 col-xl-4 team-card-wrap" data-team="pakistan">
-      <div class="content-card team-profile-card">
-        <div class="team-card-header" style="background:linear-gradient(135deg,rgba(1,119,48,.12),rgba(255,255,255,.05));border-radius:10px;padding:1rem;margin-bottom:1rem;text-align:center;">
-          <div style="font-size:3.5rem;line-height:1;margin-bottom:.5rem;">🇵🇰</div>
-          <h4 style="margin:0;font-weight:800;">Pakistan</h4>
-          <div style="font-size:.78rem;color:var(--muted);">Full Member · Rank #5 ODI</div>
-        </div>
-        <div class="d-flex justify-content-between mb-3">
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:var(--accent);">241</div><div style="font-size:.72rem;color:var(--muted)">Matches</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#00ff94;">52%</div><div style="font-size:.72rem;color:var(--muted)">Win Rate</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#fbbf24;">3</div><div style="font-size:.72rem;color:var(--muted)">ICC Titles</div></div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center" style="font-size:.82rem;padding-top:.75rem;border-top:1px solid var(--border);">
-          <div><span style="color:var(--muted)">Captain:</span> <strong>Babar Azam</strong></div>
-          <div><span style="color:var(--muted)">Coach:</span> <strong>G. Kirsten</strong></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-sm-6 col-xl-4 team-card-wrap" data-team="new zealand">
-      <div class="content-card team-profile-card">
-        <div class="team-card-header" style="background:linear-gradient(135deg,rgba(0,0,0,.15),rgba(255,255,255,.05));border-radius:10px;padding:1rem;margin-bottom:1rem;text-align:center;">
-          <div style="font-size:3.5rem;line-height:1;margin-bottom:.5rem;">🇳🇿</div>
-          <h4 style="margin:0;font-weight:800;">New Zealand</h4>
-          <div style="font-size:.78rem;color:var(--muted);">Full Member · Rank #4 ODI</div>
-        </div>
-        <div class="d-flex justify-content-between mb-3">
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:var(--accent);">228</div><div style="font-size:.72rem;color:var(--muted)">Matches</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#00ff94;">57%</div><div style="font-size:.72rem;color:var(--muted)">Win Rate</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#fbbf24;">2</div><div style="font-size:.72rem;color:var(--muted)">ICC Titles</div></div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center" style="font-size:.82rem;padding-top:.75rem;border-top:1px solid var(--border);">
-          <div><span style="color:var(--muted)">Captain:</span> <strong>Kane Williamson</strong></div>
-          <div><span style="color:var(--muted)">Coach:</span> <strong>G. Stead</strong></div>
+    <!-- England -->
+    <div class="col-md-6 col-lg-4 animate-in delay-3">
+      <div class="team-card-premium" onclick="showTeamDetail('England')">
+        <div class="team-rank-badge">Rank #3</div>
+        <div class="team-card-header">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+        <div class="team-card-body">
+          <h4 class="mb-1">England</h4>
+          <div class="text-muted small mb-3">Captain: Jos Buttler</div>
+          <div class="row text-center g-2 mb-3">
+            <div class="col-4">
+              <div class="small text-muted">Win %</div>
+              <div class="fw-700">64.2</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">ODI Cups</div>
+              <div class="fw-700">1</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">T20 Cups</div>
+              <div class="fw-700">2</div>
+            </div>
+          </div>
+          <div class="stat-progress" style="height: 4px;"><div class="stat-progress-bar" data-width="70"></div></div>
         </div>
       </div>
     </div>
 
-    <div class="col-sm-6 col-xl-4 team-card-wrap" data-team="south africa">
-      <div class="content-card team-profile-card">
-        <div class="team-card-header" style="background:linear-gradient(135deg,rgba(0,122,61,.12),rgba(255,184,28,.08));border-radius:10px;padding:1rem;margin-bottom:1rem;text-align:center;">
-          <div style="font-size:3.5rem;line-height:1;margin-bottom:.5rem;">🇿🇦</div>
-          <h4 style="margin:0;font-weight:800;">South Africa</h4>
-          <div style="font-size:.78rem;color:var(--muted);">Full Member · Rank #6 ODI</div>
-        </div>
-        <div class="d-flex justify-content-between mb-3">
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:var(--accent);">214</div><div style="font-size:.72rem;color:var(--muted)">Matches</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#00ff94;">54%</div><div style="font-size:.72rem;color:var(--muted)">Win Rate</div></div>
-          <div class="text-center"><div style="font-size:1.1rem;font-weight:800;color:#fbbf24;">1</div><div style="font-size:.72rem;color:var(--muted)">ICC Titles</div></div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center" style="font-size:.82rem;padding-top:.75rem;border-top:1px solid var(--border);">
-          <div><span style="color:var(--muted)">Captain:</span> <strong>Temba Bavuma</strong></div>
-          <div><span style="color:var(--muted)">Coach:</span> <strong>R. Peterson</strong></div>
+    <!-- Pakistan -->
+    <div class="col-md-6 col-lg-4 animate-in delay-4">
+      <div class="team-card-premium" onclick="showTeamDetail('Pakistan')">
+        <div class="team-rank-badge">Rank #5</div>
+        <div class="team-card-header">🇵🇰</div>
+        <div class="team-card-body">
+          <h4 class="mb-1">Pakistan</h4>
+          <div class="text-muted small mb-3">Captain: Babar Azam</div>
+          <div class="row text-center g-2 mb-3">
+            <div class="col-4">
+              <div class="small text-muted">Win %</div>
+              <div class="fw-700">59.8</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">ODI Cups</div>
+              <div class="fw-700">1</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">T20 Cups</div>
+              <div class="fw-700">1</div>
+            </div>
+          </div>
+          <div class="stat-progress" style="height: 4px;"><div class="stat-progress-bar" data-width="62"></div></div>
         </div>
       </div>
     </div>
 
-  </div><!-- /row -->
-  <div class="dashboard-footer mt-5">&copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Designed for DBMS Project</div>
+    <!-- New Zealand -->
+    <div class="col-md-6 col-lg-4 animate-in delay-5">
+      <div class="team-card-premium" onclick="showTeamDetail('New Zealand')">
+        <div class="team-rank-badge">Rank #4</div>
+        <div class="team-card-header">🇳🇿</div>
+        <div class="team-card-body">
+          <h4 class="mb-1">New Zealand</h4>
+          <div class="text-muted small mb-3">Captain: Kane Williamson</div>
+          <div class="row text-center g-2 mb-3">
+            <div class="col-4">
+              <div class="small text-muted">Win %</div>
+              <div class="fw-700">61.5</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">WTC Cups</div>
+              <div class="fw-700">1</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">T20 Cups</div>
+              <div class="fw-700">0</div>
+            </div>
+          </div>
+          <div class="stat-progress" style="height: 4px;"><div class="stat-progress-bar" data-width="65"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- South Africa -->
+    <div class="col-md-6 col-lg-4 animate-in delay-6">
+      <div class="team-card-premium" onclick="showTeamDetail('South Africa')">
+        <div class="team-rank-badge">Rank #6</div>
+        <div class="team-card-header">🇿🇦</div>
+        <div class="team-card-body">
+          <h4 class="mb-1">South Africa</h4>
+          <div class="text-muted small mb-3">Captain: Temba Bavuma</div>
+          <div class="row text-center g-2 mb-3">
+            <div class="col-4">
+              <div class="small text-muted">Win %</div>
+              <div class="fw-700">60.1</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">ODI Cups</div>
+              <div class="fw-700">0</div>
+            </div>
+            <div class="col-4">
+              <div class="small text-muted">T20 Cups</div>
+              <div class="fw-700">0</div>
+            </div>
+          </div>
+          <div class="stat-progress" style="height: 4px;"><div class="stat-progress-bar" data-width="60"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="dashboard-footer">
+    &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Team Roster Module
+  </div>
+
 </main>
-<div class="search-modal" id="searchModal">
-  <div class="search-box">
-    <form action="search.html" method="GET">
-      <div class="search-input-wrap"><i class="fas fa-search search-icon-abs"></i><input type="text" name="q" class="search-input" id="searchInput" placeholder="Search…" autocomplete="off"/></div>
-    </form>
-    <div style="margin-top:1rem;font-size:.75rem;color:var(--muted)">Press <kbd style="background:rgba(255,255,255,.1);border:1px solid var(--border);border-radius:4px;padding:1px 6px">ESC</kbd> to close</div>
+
+<!-- Team Detail Modal -->
+<div class="modal fade custom-modal" id="teamDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTeamName">Team Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+           <div class="col-md-4 text-center">
+              <div id="modalTeamFlag" style="font-size: 5rem; margin-bottom: 1rem;"></div>
+              <div class="badge-rank gold w-100 py-2 mb-3" style="border-radius: 8px;">Ranked #1 Globally</div>
+           </div>
+           <div class="col-md-8">
+              <div class="row g-3">
+                 <div class="col-6">
+                    <div class="text-muted small">Head Coach</div>
+                    <div class="fw-600" id="modalCoach">Rahul Dravid</div>
+                 </div>
+                 <div class="col-6">
+                    <div class="text-muted small">Home Ground</div>
+                    <div class="fw-600">Various (India)</div>
+                 </div>
+                 <div class="col-12 mt-4">
+                    <h6 class="text-accent mb-3">Key Players</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                       <span class="role-badge batter">Virat Kohli</span>
+                       <span class="role-badge batter">Rohit Sharma</span>
+                       <span class="role-badge bowler">Jasprit Bumrah</span>
+                       <span class="role-badge bowler">Mohammed Shami</span>
+                       <span class="role-badge all-rounder">Hardik Pandya</span>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-outline-custom" data-bs-dismiss="modal">Close</button>
+        <button class="btn-primary-custom" onclick="showToast('Loading full roster...', 'info')">View Full Roster</button>
+      </div>
+    </div>
   </div>
 </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 <script src="js/script.js"></script>
 <script>
-// Team search
-document.getElementById('teamSearch')?.addEventListener('input', function() {
-  const t = this.value.toLowerCase();
-  document.querySelectorAll('.team-card-wrap').forEach(c => {
-    c.style.display = c.dataset.team.includes(t) ? '' : 'none';
-  });
-});
+  function showTeamDetail(team) {
+    const modal = new bootstrap.Modal(document.getElementById('teamDetailModal'));
+    document.getElementById('modalTeamName').textContent = `${team} National Team`;
+    
+    const flags = { 'India': '🇮🇳', 'Australia': '🇦🇺', 'England': '🏴󠁧󠁢󠁥󠁮󠁧󠁿', 'Pakistan': '🇵🇰', 'New Zealand': '🇳🇿', 'South Africa': '🇿🇦' };
+    const coaches = { 'India': 'Gautam Gambhir', 'Australia': 'Andrew McDonald', 'England': 'Brendon McCullum', 'Pakistan': 'Gary Kirsten', 'New Zealand': 'Gary Stead', 'South Africa': 'Rob Walter' };
+    
+    document.getElementById('modalTeamFlag').textContent = flags[team];
+    document.getElementById('modalCoach').textContent = coaches[team];
+    
+    modal.show();
+  }
 </script>
-</body></html>
+</body>
+</html>
