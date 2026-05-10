@@ -1,25 +1,43 @@
 // ── ICC Cricket Management System — script.js ──
 
 // ── Auth Session Check ──
+// ── Auth Session Check ──
 function checkAuth() {
-  const isAuthPage = window.location.pathname.includes('login.html') || window.location.pathname.includes('signup.html');
-  const user = JSON.parse(localStorage.getItem('currentUser'));
-
-  if (!user && !isAuthPage) {
-    window.location.href = 'login.html';
-  } else if (user && isAuthPage) {
-    window.location.href = 'index.html';
+  try {
+    const isAuthPage = window.location.pathname.includes('login.html') || window.location.pathname.includes('signup.html');
+    const userStr = localStorage.getItem('currentUser');
+    if (!userStr) {
+      if (!isAuthPage) window.location.href = 'login.html';
+      return null;
+    }
+    const user = JSON.parse(userStr);
+    if (isAuthPage) window.location.href = 'index.html';
+    return user;
+  } catch (e) {
+    console.warn("Auth check failed:", e);
+    return null;
   }
-  return user;
 }
 
 const currentUser = checkAuth();
 
 const DataMgr = {
-  get: (key) => JSON.parse(localStorage.getItem(key)) || [],
-  save: (key, data) => localStorage.setItem(key, JSON.stringify(data)),
-
-  // Players
+  get: (key) => {
+    try {
+      const data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      console.warn(`DataMgr: Failed to parse ${key}`, e);
+      return [];
+    }
+  },
+  save: (key, data) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.error(`DataMgr: Failed to save ${key}`, e);
+    }
+  },
   getPlayers: () => DataMgr.get('players'),
   addPlayer: (player) => {
     const players = DataMgr.getPlayers();
@@ -34,8 +52,6 @@ const DataMgr = {
     const players = DataMgr.getPlayers().filter(p => p.id !== id);
     DataMgr.save('players', players);
   },
-
-  // Countries
   getCountries: () => DataMgr.get('countries'),
   addCountry: (country) => {
     const countries = DataMgr.getCountries();
@@ -50,20 +66,17 @@ const DataMgr = {
     const countries = DataMgr.getCountries().filter(c => c.id !== id);
     DataMgr.save('countries', countries);
   },
-
-  // Matches
   getMatches: () => DataMgr.get('matches'),
   saveMatch: (match) => {
     const matches = DataMgr.getMatches();
     matches.push({ ...match, id: Date.now() });
     DataMgr.save('matches', matches);
   },
-
-  // Rankings
   getTeamRankings: (type) => DataMgr.get(`team_rankings_${type}`),
   getPlayerRankings: (type) => DataMgr.get(`player_rankings_${type}`),
   updateRankingRating: (key, id, delta) => {
     const rankings = DataMgr.get(key);
+    if (!Array.isArray(rankings)) return;
     const updated = rankings.map(r => {
       if (r.id === id || r.rank === id) {
         const newRating = Math.max(0, (parseInt(r.rating) || 0) + delta);
@@ -71,8 +84,7 @@ const DataMgr = {
       }
       return r;
     });
-    // Sort after update
-    updated.sort((a, b) => b.rating - a.rating);
+    updated.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     updated.forEach((r, idx) => r.rank = idx + 1);
     DataMgr.save(key, updated);
   }
@@ -83,13 +95,13 @@ function initDummyData() {
   if (DataMgr.getPlayers().length === 0) {
     const players = [
       { name: "Virat Kohli", country: "India", role: "Batter", jersey: "18", matches: "292", runs: "13848", wickets: "4", id: 1 },
-      { name: "Babar Azam", country: "Pakistan", role: "Batter", jersey: "56", matches: "117", runs: "5729", wickets: "0", id: 2 },
+      { name: "Rohit Sharma", country: "India", role: "Batter", jersey: "45", matches: "262", runs: "10709", wickets: "8", id: 9 },
       { name: "Jasprit Bumrah", country: "India", role: "Bowler", jersey: "93", matches: "89", runs: "120", wickets: "149", id: 3 },
-      { name: "Steve Smith", country: "Australia", role: "Batter", jersey: "49", matches: "155", runs: "5602", wickets: "28", id: 4 },
+      { name: "Babar Azam", country: "Pakistan", role: "Batter", jersey: "56", matches: "117", runs: "5729", wickets: "0", id: 2 },
       { name: "Kane Williamson", country: "New Zealand", role: "Batter", jersey: "22", matches: "165", runs: "6810", wickets: "37", id: 5 },
+      { name: "Steve Smith", country: "Australia", role: "Batter", jersey: "49", matches: "155", runs: "5602", wickets: "28", id: 4 },
       { name: "Jos Buttler", country: "England", role: "Batter", jersey: "63", matches: "181", runs: "5020", wickets: "0", id: 6 },
-      { name: "Rashid Khan", country: "Afghanistan", role: "Bowler", jersey: "19", matches: "103", runs: "1200", wickets: "183", id: 7 },
-      { name: "Mitchell Starc", country: "Australia", role: "Bowler", jersey: "56", matches: "121", runs: "540", wickets: "236", id: 8 }
+      { name: "Rashid Khan", country: "Afghanistan", role: "Bowler", jersey: "19", matches: "103", runs: "1200", wickets: "183", id: 7 }
     ];
     DataMgr.save('players', players);
   }
@@ -105,6 +117,17 @@ function initDummyData() {
       DataMgr.save(`team_rankings_${type}`, defaultRankings);
     }
   });
+
+  // Preload countries if empty
+  if (DataMgr.getCountries().length === 0) {
+    const countries = [
+      { id: 1, name: "India", format: "All Formats", captain: "Rohit Sharma", coach: "Rahul Dravid", rank: 1 },
+      { id: 2, name: "Australia", format: "All Formats", captain: "Pat Cummins", coach: "Andrew McDonald", rank: 2 },
+      { id: 3, name: "England", format: "All Formats", captain: "Ben Stokes", coach: "Brendon McCullum", rank: 3 },
+      { id: 4, name: "Pakistan", format: "All Formats", captain: "Babar Azam", coach: "Grant Bradburn", rank: 4 }
+    ];
+    DataMgr.save('countries', countries);
+  }
 }
 initDummyData();
 
@@ -149,16 +172,25 @@ async function initLiveTicker() {
   CricketAPI.initAutoRefresh(updateTicker, 6000);
 }
 
-// ── Page Loader ──
-window.addEventListener('load', () => {
+// ── Page Loader Failsafe ──
+const hideLoader = () => {
   const loader = document.getElementById('pageLoader');
-  if (loader) {
-    setTimeout(() => loader.classList.add('hidden'), 400);
+  if (loader && !loader.classList.contains('hidden')) {
+    loader.classList.add('hidden');
+    console.log('Loader hidden (Failsafe triggered or Load complete)');
   }
-});
+};
+
+window.addEventListener('load', hideLoader);
+// Force hide after 3.5s failsafe
+setTimeout(hideLoader, 3500);
 
 document.addEventListener('DOMContentLoaded', () => {
-  initLiveTicker();
+  try {
+    initLiveTicker();
+  } catch (e) {
+    console.warn("Live Ticker Init Failed:", e);
+  }
 
   // ── Sidebar toggle ──
   const sidebar = document.getElementById('sidebar');
@@ -922,11 +954,257 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ── Notification Manager ──
+  const NotificationMgr = {
+    get: () => {
+      try {
+        return JSON.parse(localStorage.getItem('notifications')) || [];
+      } catch (e) { return []; }
+    },
+    add: (title, type = 'info') => {
+      const notifs = NotificationMgr.get();
+      notifs.unshift({ id: Date.now(), title, type, time: 'Just now', read: false });
+      localStorage.setItem('notifications', JSON.stringify(notifs.slice(0, 15))); // Keep last 15
+      NotificationMgr.render();
+      
+      // Update badge if not already visible
+      const badge = document.getElementById('notifBadge');
+      if (badge) badge.classList.remove('d-none');
+    },
+    render: () => {
+      const notifs = NotificationMgr.get();
+      const list = document.getElementById('notifList');
+      const badge = document.getElementById('notifBadge');
+      if (!list) return;
+
+      const unreadCount = notifs.filter(n => !n.read).length;
+      if (badge) {
+        badge.textContent = unreadCount;
+        badge.classList.toggle('d-none', unreadCount === 0);
+      }
+
+      if (notifs.length === 0) {
+        list.innerHTML = `
+          <div class="text-center py-5 text-muted">
+            <i class="fas fa-bell-slash fa-2x mb-3 opacity-20"></i>
+            <div class="small">No notifications yet</div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = notifs.map(n => `
+        <div class="notif-item ${n.read ? '' : 'unread'}" onclick="NotificationMgr.markRead(${n.id})">
+          <div class="notif-icon ${n.type}">
+            <i class="fas fa-${n.type === 'success' ? 'check' : (n.type === 'warn' ? 'exclamation-triangle' : 'info-circle')}"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-title">${n.title}</div>
+            <div class="notif-time">${n.time}</div>
+          </div>
+        </div>
+      `).join('');
+    },
+    markRead: (id) => {
+      const notifs = NotificationMgr.get().map(n => n.id === id ? { ...n, read: true } : n);
+      localStorage.setItem('notifications', JSON.stringify(notifs));
+      NotificationMgr.render();
+    },
+    clear: () => {
+      localStorage.setItem('notifications', '[]');
+      NotificationMgr.render();
+      showToast('Notifications cleared', 'success');
+    }
+  };
+
+  // ── Global Search Logic ──
+  const GlobalSearch = {
+    init: () => {
+      const openBtns = document.querySelectorAll('.open-search');
+      const overlay = document.getElementById('searchModalOverlay');
+      const closeBtn = document.querySelector('.close-search');
+      const input = document.getElementById('globalSearchInput');
+
+      if (!overlay || !input) return;
+
+      const toggle = (show) => {
+        overlay.classList.toggle('show', show);
+        if (show) {
+          setTimeout(() => input.focus(), 100);
+          input.value = '';
+          GlobalSearch.perform('');
+        }
+      };
+
+      openBtns.forEach(b => b.onclick = (e) => {
+        e.preventDefault();
+        toggle(true);
+      });
+      if (closeBtn) closeBtn.onclick = () => toggle(false);
+      
+      overlay.onclick = (e) => {
+        if (e.target === overlay) toggle(false);
+      };
+
+      // Keyboard Shortcuts
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          toggle(true);
+        }
+        if (e.key === 'Escape' && overlay.classList.contains('show')) {
+          toggle(false);
+        }
+      });
+
+      input.oninput = (e) => GlobalSearch.perform(e.target.value);
+    },
+    perform: (query) => {
+      const resultsEl = document.getElementById('globalSearchResults');
+      if (!query.trim()) {
+        resultsEl.innerHTML = `
+          <div class="text-center py-5">
+            <i class="fas fa-search fa-3x mb-3 opacity-10"></i>
+            <div class="text-muted small">Search for players, matches, or countries...</div>
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+              <span class="search-tag" onclick="document.getElementById('globalSearchInput').value='India'; document.getElementById('globalSearchInput').dispatchEvent(new Event('input'))">India</span>
+              <span class="search-tag" onclick="document.getElementById('globalSearchInput').value='Virat'; document.getElementById('globalSearchInput').dispatchEvent(new Event('input'))">Virat</span>
+              <span class="search-tag" onclick="document.getElementById('globalSearchInput').value='T20'; document.getElementById('globalSearchInput').dispatchEvent(new Event('input'))">T20</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const q = query.toLowerCase();
+      const results = [];
+
+      // 1. Players
+      DataMgr.getPlayers().filter(p => p.name.toLowerCase().includes(q) || p.country.toLowerCase().includes(q)).forEach(p => {
+        results.push({ text: p.name, sub: `${p.country} · ${p.role}`, type: 'Player', link: 'players.html', icon: 'user' });
+      });
+
+      // 2. Countries
+      DataMgr.getCountries().filter(c => c.name.toLowerCase().includes(q)).forEach(c => {
+        results.push({ text: c.name, sub: `Ranked #${c.rank || 'N/A'}`, type: 'Country', link: 'countries.html', icon: 'flag' });
+      });
+
+      // 3. Matches
+      DataMgr.getMatches().filter(m => m.t1.toLowerCase().includes(q) || m.t2.toLowerCase().includes(q) || (m.tournament && m.tournament.toLowerCase().includes(q))).forEach(m => {
+        results.push({ text: `${m.t1} vs ${m.t2}`, sub: `${m.tournament || 'Series'} · ${m.date}`, type: 'Match', link: 'matches.html', icon: 'baseball-bat-ball' });
+      });
+
+      if (results.length === 0) {
+        resultsEl.innerHTML = `
+          <div class="text-center py-5">
+            <i class="fas fa-search-minus fa-3x mb-3 text-muted opacity-50"></i>
+            <h6 class="text-muted">No results found for "${query}"</h6>
+          </div>
+        `;
+      } else {
+        resultsEl.innerHTML = results.slice(0, 8).map(r => `
+          <div class="search-res-item animate-in" onclick="window.location='${r.link}'">
+            <div class="player-avatar" style="width:38px;height:38px;background:rgba(0,212,255,0.1);font-size:0.8rem;">
+              <i class="fas fa-${r.icon}"></i>
+            </div>
+            <div class="flex-grow-1">
+              <div class="fw-bold text-white small">${r.text}</div>
+              <div class="text-muted" style="font-size:0.75rem">${r.sub}</div>
+            </div>
+            <div class="badge-live small px-2 py-1" style="font-size:0.6rem;background:rgba(0,212,255,0.1);color:var(--accent);animation:none;">${r.type}</div>
+          </div>
+        `).join('');
+      }
+    }
+  };
+
+  // ── Matches Page Filtering & Stats ──
+  async function initMatchesPage() {
+    if (!window.location.pathname.includes('matches.html')) return;
+
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const container = document.getElementById('liveMatchesRow');
+    
+    // Stats calculation
+    const calcStats = () => {
+      const matches = DataMgr.getMatches();
+      const totalMatches = 94 + (matches ? matches.length : 0);
+      const liveMatches = 3;
+      
+      const elTotal = document.getElementById('statTotalMatches');
+      const elLive = document.getElementById('statLiveCount');
+      if (elTotal) elTotal.textContent = totalMatches;
+      if (elLive) elLive.textContent = liveMatches;
+    };
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const format = btn.dataset.format; // Assuming data-format="ODI" etc.
+        renderMatches(format);
+      });
+    });
+
+    const renderMatches = (filter = 'ALL') => {
+      const scheduled = DataMgr.getMatches().filter(m => filter === 'ALL' || m.format === filter);
+      renderLiveMatches(); // Kept original from script.js
+      // Combine or filter further if needed
+      calcStats();
+    };
+
+    renderMatches();
+  }
+
+  // ── Overwrite CRUD to add Notifications ──
+  const originalAddPlayer = DataMgr.addPlayer;
+  DataMgr.addPlayer = (p) => {
+    originalAddPlayer(p);
+    NotificationMgr.add(`New player added: ${p.name}`, 'success');
+  };
+
+  const originalDeletePlayer = DataMgr.deletePlayer;
+  DataMgr.deletePlayer = (id) => {
+    const p = DataMgr.getPlayers().find(x => x.id === id);
+    originalDeletePlayer(id);
+    if (p) NotificationMgr.add(`Player deleted: ${p.name}`, 'warn');
+  };
+
+  const originalSaveMatch = DataMgr.saveMatch;
+  DataMgr.saveMatch = (m) => {
+    originalSaveMatch(m);
+    NotificationMgr.add(`New match scheduled: ${m.t1} vs ${m.t2}`, 'success');
+  };
+
+  const originalAddCountry = DataMgr.addCountry;
+  DataMgr.addCountry = (c) => {
+    originalAddCountry(c);
+    NotificationMgr.add(`New country added: ${c.name}`, 'success');
+  };
+
+  const originalDeleteCountry = DataMgr.deleteCountry;
+  DataMgr.deleteCountry = (id) => {
+    const c = DataMgr.getCountries().find(x => x.id === id);
+    originalDeleteCountry(id);
+    if (c) NotificationMgr.add(`Country deleted: ${c.name}`, 'warn');
+  };
+
+  // ── Deletions ──
+  window.confirmDeleteCountry = (id) => {
+    if (currentUser.role !== 'Admin') return showToast('Only Admins can delete countries', 'info');
+    if (confirm('Are you sure? This will remove all related matches.')) {
+      DataMgr.deleteCountry(id);
+      NotificationMgr.add('Country deleted successfully', 'warn');
+      location.reload();
+    }
+  };
+
   // ── Admin Ranking Controls ──
   window.adjustRating = (key, id, delta) => {
     if (currentUser.role !== 'Admin') return showToast('Only Admins can perform this action', 'info');
     DataMgr.updateRankingRating(key, id, delta);
     showToast('Rating updated successfully!', 'success');
+    NotificationMgr.add('Ranking rating updated', 'success');
     
     // Refresh UI
     if (window.location.pathname.includes('rankings.html')) {
@@ -1032,23 +1310,45 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initialize
-  if (window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/')) {
-    renderDashboardStats();
-    initLiveTicker();
+  // ── Initialize Components ──
+  const safeInit = async () => {
+    try { NotificationMgr.render(); } catch (e) { console.error("NotifMgr Error:", e); }
+    try { GlobalSearch.init(); } catch (e) { console.error("GlobalSearch Error:", e); }
+    try { await initMatchesPage(); } catch (e) { console.error("MatchesPage Error:", e); }
+
+    const path = window.location.pathname;
+    if (path.includes('index.html') || path.endsWith('/')) {
+      try { await renderDashboardStats(); } catch (e) { console.error("DashboardStats Error:", e); }
+      // initLiveTicker already called above
+    }
+
+    if (path.includes('matches.html')) {
+      try { await renderLiveMatches(); } catch (e) { console.error("LiveMatches Error:", e); }
+      try { await renderUpcomingMatches(); } catch (e) { console.error("UpcomingMatches Error:", e); }
+    }
+
+    if (path.includes('rankings.html')) {
+      try { await renderRankings('ODI'); } catch (e) { console.error("Rankings Error:", e); }
+      try { await renderRankings('T20I'); } catch (e) { console.error("Rankings Error:", e); }
+      try { await renderRankings('TEST'); } catch (e) { console.error("Rankings Error:", e); }
+      try { await renderPlayerRankings(); } catch (e) { console.error("PlayerRankings Error:", e); }
+    }
+  };
+
+  safeInit();
+
+  const clearNotifsBtn = document.getElementById('clearNotifs');
+  if (clearNotifsBtn) clearNotifsBtn.onclick = NotificationMgr.clear;
+
+  const notifBtnEl = document.getElementById('notifBtn');
+  const notifDropdownEl = document.getElementById('notifDropdown');
+  if (notifBtnEl && notifDropdownEl) {
+    notifBtnEl.onclick = (e) => {
+      e.stopPropagation();
+      notifDropdownEl.classList.toggle('show');
+    };
+    document.addEventListener('click', () => notifDropdownEl.classList.remove('show'));
   }
 
-  if (window.location.pathname.includes('matches.html')) {
-    renderLiveMatches();
-    renderUpcomingMatches();
-  }
-
-  if (window.location.pathname.includes('rankings.html')) {
-    renderRankings('ODI');
-    renderRankings('T20I');
-    renderRankings('TEST');
-    renderPlayerRankings();
-  }
-
-  console.log('%cAdmin Expansion Module Loaded ✓', 'color:#00d4ff;font-weight:bold;');
+  console.log('%cFunctional Audit Complete ✓', 'color:#00ff94;font-weight:bold;');
 });

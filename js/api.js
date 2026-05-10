@@ -105,27 +105,36 @@ const CricketAPI = (() => {
     }
   };
 
-  // CORE FETCH FUNCTION
+  // CORE FETCH FUNCTION with Timeout
   async function fetchData(endpoint, cacheKey) {
     if (API_CONFIG.MOCK_MODE) {
-      return new Promise(resolve => setTimeout(() => resolve(FALLBACK_DATA[cacheKey] || []), 500));
+      return new Promise(resolve => setTimeout(() => resolve(FALLBACK_DATA[cacheKey] || []), 300));
     }
 
     const cached = cache.get(cacheKey);
     if (cached) return cached;
 
+    // Timeout controller
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
     try {
-      // Example endpoint for CricAPI (requires key)
-      const response = await fetch(`https://api.cricapi.com/v1/${endpoint}&apikey=${API_CONFIG.CRIC_API_KEY}`);
-      const result = await response.json();
+      const response = await fetch(`https://api.cricapi.com/v1/${endpoint}&apikey=${API_CONFIG.CRIC_API_KEY}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
       
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+      
+      const result = await response.json();
       if (result.status === "success") {
         cache.set(cacheKey, result.data);
         return result.data;
       }
       throw new Error(result.reason || "API Error");
     } catch (err) {
-      console.error("Fetch Error:", err);
+      clearTimeout(timeoutId);
+      console.warn(`API Fetch Failure (${cacheKey}):`, err.message);
       return FALLBACK_DATA[cacheKey] || [];
     }
   }

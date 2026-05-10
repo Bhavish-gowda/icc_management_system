@@ -41,12 +41,23 @@
 
   <div class="navbar-right ms-auto">
     <button class="btn-search-nav open-search"><i class="fas fa-search me-1"></i><span class="d-none d-md-inline">Search</span> <kbd style="font-size:.7rem;opacity:.6">⌘K</kbd></button>
-    <button class="notification-btn" id="notifBtn" aria-label="Notifications">
-      <i class="fas fa-bell fa-lg"></i>
-      <span class="notif-badge"></span>
-    </button>
+    <div class="position-relative">
+      <button class="notification-btn" id="notifBtn" aria-label="Notifications">
+        <i class="fas fa-bell fa-lg"></i>
+        <span class="notif-badge d-none" id="notifBadge"></span>
+      </button>
+      <div class="notification-dropdown" id="notifDropdown">
+        <div class="notif-header">
+          <h6>Notifications</h6>
+          <span class="notif-clear" id="clearNotifs">Clear all</span>
+        </div>
+        <div class="notif-body" id="notifList">
+          <!-- Notifs injected here -->
+        </div>
+      </div>
+    </div>
     <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
-    <div class="user-avatar">AD</div>
+    <div class="user-avatar" id="userAvatar">AD</div>
   </div>
 </nav>
 
@@ -469,3 +480,20 @@
     </div>
   </div>
 </div>
+
+<!-- ═══════════════ SEARCH MODAL OVERLAY ═══════════════ -->
+<div class="search-modal-overlay" id="searchModalOverlay">
+  <div class="search-modal-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="m-0 text-accent">Global Search</h5>
+      <button class="btn btn-icon close-search"><i class="fas fa-times"></i></button>
+    </div>
+    <input type="text" class="search-modal-input" id="globalSearchInput" placeholder="Search players, teams, countries, matches...">
+    <div class="search-results-mini" id="globalSearchResults">
+      <div class="text-center py-4 text-muted">Type to search across the system...</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

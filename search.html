@@ -205,74 +205,102 @@
   const noResultsState = document.getElementById('noResultsState');
   const searchState = document.getElementById('searchState');
 
-  let searchTimeout;
+  const highlightText = (text, query) => {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<span class="text-accent">$1</span>');
+  };
 
-  searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.trim();
+  const performSearch = (query) => {
+    const q = query.toLowerCase().trim();
+    loadingState.classList.add('d-none');
     
-    if (query.length === 0) {
+    if (!q) {
       searchState.classList.remove('d-none');
-      loadingState.classList.add('d-none');
-      noResultsState.classList.add('d-none');
+      resultsGrid.classList.add('d-none');
       return;
     }
 
-    // Show loading
-    searchState.classList.add('d-none');
-    loadingState.classList.remove('d-none');
-    noResultsState.classList.add('d-none');
+    const players = DataMgr.getPlayers().filter(p => p.name.toLowerCase().includes(q) || p.country.toLowerCase().includes(q));
+    const countries = DataMgr.getCountries().filter(c => c.name.toLowerCase().includes(q));
+    const matches = DataMgr.getMatches().filter(m => m.t1.toLowerCase().includes(q) || m.t2.toLowerCase().includes(q) || (m.tournament && m.tournament.toLowerCase().includes(q)));
 
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      performSearch(query);
-    }, 600);
-  });
-
-  async function performSearch(query) {
-    loadingState.classList.add('d-none');
-    
-    // Check if player exists in our real-time data
-    const player = await CricketAPI.getPlayerStats(query);
-
-    if (player) {
-      searchState.classList.add('d-none');
-      resultsGrid.classList.remove('d-none');
-      resultsGrid.innerHTML = `
-        <div class="col-md-6 mx-auto">
-          <div class="match-card-detailed animate-in">
-            <div class="match-header"><span class="match-badge badge-live">PLAYER FOUND</span></div>
-            <div class="match-body flex-column align-items-center text-center">
-              <div class="player-avatar mb-3" style="width:80px;height:80px;font-size:2rem;">${query.split(' ').map(n=>n[0]).join('')}</div>
-              <h4>${query}</h4>
-              <p class="text-muted">${player.role} · ${player.country}</p>
-              <div class="row w-100 g-2 mt-2">
-                <div class="col-4"><div class="text-accent fw-bold">${player.stats.ODI.runs}</div><div class="small text-muted">ODI Runs</div></div>
-                <div class="col-4"><div class="text-accent fw-bold">${player.stats.T20I.runs}</div><div class="small text-muted">T20 Runs</div></div>
-                <div class="col-4"><div class="text-accent fw-bold">${player.stats.TEST.runs}</div><div class="small text-muted">Test Runs</div></div>
-              </div>
-              <button class="btn-primary-custom mt-4 w-100" onclick="window.location='players.html'">View Full Profile</button>
-            </div>
-          </div>
-        </div>
-      `;
-      showToast(`Real-time stats loaded for ${query}`, 'success');
-    } else {
-      resultsGrid.classList.add('d-none');
+    if (players.length === 0 && countries.length === 0 && matches.length === 0) {
       noResultsState.classList.remove('d-none');
+      resultsGrid.classList.add('d-none');
+      searchState.classList.add('d-none');
+      return;
     }
-  }
+
+    noResultsState.classList.add('d-none');
+    searchState.classList.add('d-none');
+    resultsGrid.classList.remove('d-none');
+    resultsGrid.innerHTML = '';
+
+    // 1. Players Section
+    if (players.length > 0) {
+      const col = document.createElement('div');
+      col.className = 'col-md-6 mb-4';
+      col.innerHTML = `<span class="result-category">Players Found (${players.length})</span>` + players.map(p => `
+        <a href="players.html" class="search-result-item animate-in">
+          <div class="player-avatar">${p.name.split(' ').map(n=>n[0]).join('')}</div>
+          <div>
+            <div class="fw-bold text-white">${highlightText(p.name, q)}</div>
+            <div class="small text-muted">${p.country} · ${p.role}</div>
+          </div>
+        </a>
+      `).join('');
+      resultsGrid.appendChild(col);
+    }
+
+    // 2. Countries/Teams Section
+    if (countries.length > 0) {
+      const col = document.createElement('div');
+      col.className = 'col-md-6 mb-4';
+      col.innerHTML = `<span class="result-category">Countries & Teams (${countries.length})</span>` + countries.map(c => `
+        <a href="countries.html" class="search-result-item animate-in" style="animation-delay: 0.1s">
+          <div class="team-flag" style="width:40px;height:40px;background:rgba(0,212,255,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🏳️</div>
+          <div>
+            <div class="fw-bold text-white">${highlightText(c.name, q)}</div>
+            <div class="small text-muted">Captain: ${c.captain || 'TBA'} · Rank #${c.rank || 'N/A'}</div>
+          </div>
+        </a>
+      `).join('');
+      resultsGrid.appendChild(col);
+    }
+
+    // 3. Matches Section
+    if (matches.length > 0) {
+      const col = document.createElement('div');
+      col.className = 'col-12 mb-4';
+      col.innerHTML = `<span class="result-category">Matches & Schedule (${matches.length})</span>` + matches.map(m => `
+        <div class="search-result-item animate-in" style="animation-delay: 0.2s" onclick="window.location='matches.html'">
+          <div class="flex-grow-1">
+            <div class="fw-bold text-accent">${highlightText(m.t1, q)} vs ${highlightText(m.t2, q)}</div>
+            <div class="small text-muted">${m.tournament || 'International Series'} · ${m.date} at ${m.venue}</div>
+          </div>
+          <div class="badge-live small px-2 py-1" style="font-size:0.6rem;background:rgba(0,212,255,0.1);color:var(--accent);animation:none;">${m.format}</div>
+        </div>
+      `).join('');
+      resultsGrid.appendChild(col);
+    }
+  };
 
   function autoSearch(q) {
     searchInput.value = q;
-    searchInput.dispatchEvent(new Event('input'));
+    performSearch(q);
   }
 
-  // Keyboard shortcut '/'
-  document.addEventListener('keydown', (e) => {
-    if (e.key === '/' && document.activeElement !== searchInput) {
-      e.preventDefault();
-      searchInput.focus();
+  searchInput.addEventListener('input', (e) => {
+    const val = e.target.value;
+    if (!val.trim()) {
+      searchState.classList.remove('d-none');
+      resultsGrid.classList.add('d-none');
+      noResultsState.classList.add('d-none');
+      return;
     }
+    loadingState.classList.remove('d-none');
+    performSearch(val);
   });
 
   // Handle URL params
@@ -282,6 +310,14 @@
     if (q) {
       searchInput.value = q;
       performSearch(q);
+    }
+  });
+
+  // Keyboard shortcut '/'
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== searchInput) {
+      e.preventDefault();
+      searchInput.focus();
     }
   });
 </script>
