@@ -119,21 +119,10 @@
           <!-- Recent Results -->
           <h2 class="section-title animate-in delay-3"><i class="fas fa-check-circle" style="color:#00ff94"></i> Recent Results</h2>
           <div class="content-card p-0 overflow-hidden animate-in delay-3 mb-4 mb-xl-0">
-            <div class="recent-match-list">
-                <div class="recent-match-item">
-                    <div class="date-col"><div class="fw-bold">10 May</div><div class="text-muted" style="font-size:0.75rem">ODI</div></div>
-                    <div class="teams-col"><div class="team-win"><span>🇦🇺</span> Australia <span class="score-sm ms-auto">312/6</span></div><div class="team-loss"><span>🇿🇦</span> S. Africa <span class="score-sm ms-auto">278/10</span></div></div>
-                    <div class="result-col"><div class="result-badge win">AUS won by 34 runs</div></div>
-                </div>
-                <div class="recent-match-item">
-                    <div class="date-col"><div class="fw-bold">08 May</div><div class="text-muted" style="font-size:0.75rem">T20I</div></div>
-                    <div class="teams-col"><div class="team-loss"><span>🇧🇩</span> Bangladesh <span class="score-sm ms-auto">142/8</span></div><div class="team-win"><span>🇦🇫</span> Afghanistan <span class="score-sm ms-auto">143/4</span></div></div>
-                    <div class="result-col"><div class="result-badge win" style="color:#00d4ff;background:rgba(0,212,255,0.1)">AFG won by 6 wkts</div></div>
-                </div>
-                <div class="recent-match-item">
-                    <div class="date-col"><div class="fw-bold">05 May</div><div class="text-muted" style="font-size:0.75rem">Test</div></div>
-                    <div class="teams-col"><div class="team-win"><span>🇮🇳</span> India <span class="score-sm ms-auto">450 &amp; 210/3</span></div><div class="team-loss"><span>🏴󠁧󠁢󠁥󠁮󠁧󠁿</span> England <span class="score-sm ms-auto">280 &amp; 320</span></div></div>
-                    <div class="result-col"><div class="result-badge win">IND won by 7 wkts</div></div>
+            <div class="recent-match-list" id="recentMatchesList">
+                <div class="text-center py-5 text-muted small">
+                  <i class="fas fa-database mb-2 d-block" style="font-size:1.5rem; opacity:0.3;"></i>
+                  MySQL Results Coming Soon
                 </div>
             </div>
           </div>
@@ -250,7 +239,7 @@
           <div class="row g-3 mb-3">
               <div class="col-md-5">
                   <label class="form-label">Team 1</label>
-                  <select class="form-select custom-input" required>
+                  <select class="form-select custom-input" id="mTeam1" required>
                       <option value="">Select Team</option>
                       <option>India</option>
                       <option>Australia</option>
@@ -262,7 +251,7 @@
               </div>
               <div class="col-md-5">
                   <label class="form-label">Team 2</label>
-                  <select class="form-select custom-input" required>
+                  <select class="form-select custom-input" id="mTeam2" required>
                       <option value="">Select Team</option>
                       <option>India</option>
                       <option>Australia</option>
@@ -273,7 +262,7 @@
           <div class="row g-3 mb-3">
               <div class="col-md-6">
                   <label class="form-label">Format</label>
-                  <select class="form-select custom-input" required>
+                  <select class="form-select custom-input" id="mFormat" required>
                     <option value="ODI">ODI</option>
                     <option value="T20I">T20I</option>
                     <option value="Test">Test Match</option>
@@ -281,18 +270,18 @@
               </div>
               <div class="col-md-6">
                   <label class="form-label">Date</label>
-                  <input type="date" class="form-control custom-input" required>
+                  <input type="date" class="form-control custom-input" id="mDate" required>
               </div>
           </div>
           <div class="mb-3">
               <label class="form-label">Venue</label>
-              <input type="text" class="form-control custom-input" placeholder="Stadium, City">
+              <input type="text" class="form-control custom-input" id="mVenue" placeholder="Stadium, City">
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary-custom" onclick="document.getElementById('addMatchModal').querySelector('.btn-close').click();">Save Schedule</button>
+        <button type="button" class="btn btn-primary-custom" id="btnSaveMatch">Save Schedule</button>
       </div>
     </div>
   </div>

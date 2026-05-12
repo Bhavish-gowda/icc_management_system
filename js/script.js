@@ -38,7 +38,7 @@ const DataMgr = {
       console.error(`DataMgr: Failed to save ${key}`, e);
     }
   },
-  getPlayers: () => DataMgr.get('players'),
+  getPlayers: () => [], // Players now managed by backend MySQL
   addPlayer: (player) => {
     const players = DataMgr.getPlayers();
     players.push({ ...player, id: Date.now() });
@@ -48,11 +48,14 @@ const DataMgr = {
     const players = DataMgr.getPlayers().map(p => p.id === id ? { ...p, ...updatedData } : p);
     DataMgr.save('players', players);
   },
+  /*
   deletePlayer: (id) => {
     const players = DataMgr.getPlayers().filter(p => p.id !== id);
     DataMgr.save('players', players);
   },
-  getCountries: () => DataMgr.get('countries'),
+  */
+  getCountries: () => [], // Migrated to MySQL
+  /*
   addCountry: (country) => {
     const countries = DataMgr.getCountries();
     countries.push({ ...country, id: Date.now() });
@@ -66,12 +69,15 @@ const DataMgr = {
     const countries = DataMgr.getCountries().filter(c => c.id !== id);
     DataMgr.save('countries', countries);
   },
-  getMatches: () => DataMgr.get('matches'),
+  */
+  getMatches: () => [], // Migrated to MySQL
+  /*
   saveMatch: (match) => {
     const matches = DataMgr.getMatches();
     matches.push({ ...match, id: Date.now() });
     DataMgr.save('matches', matches);
   },
+  */
   getTeamRankings: (type) => DataMgr.get(`team_rankings_${type}`),
   getPlayerRankings: (type) => DataMgr.get(`player_rankings_${type}`),
   updateRankingRating: (key, id, delta) => {
@@ -92,19 +98,7 @@ const DataMgr = {
 
 // ── Dummy Data Preloading ──
 function initDummyData() {
-  if (DataMgr.getPlayers().length === 0) {
-    const players = [
-      { name: "Virat Kohli", country: "India", role: "Batter", jersey: "18", matches: "292", runs: "13848", wickets: "4", id: 1 },
-      { name: "Rohit Sharma", country: "India", role: "Batter", jersey: "45", matches: "262", runs: "10709", wickets: "8", id: 9 },
-      { name: "Jasprit Bumrah", country: "India", role: "Bowler", jersey: "93", matches: "89", runs: "120", wickets: "149", id: 3 },
-      { name: "Babar Azam", country: "Pakistan", role: "Batter", jersey: "56", matches: "117", runs: "5729", wickets: "0", id: 2 },
-      { name: "Kane Williamson", country: "New Zealand", role: "Batter", jersey: "22", matches: "165", runs: "6810", wickets: "37", id: 5 },
-      { name: "Steve Smith", country: "Australia", role: "Batter", jersey: "49", matches: "155", runs: "5602", wickets: "28", id: 4 },
-      { name: "Jos Buttler", country: "England", role: "Batter", jersey: "63", matches: "181", runs: "5020", wickets: "0", id: 6 },
-      { name: "Rashid Khan", country: "Afghanistan", role: "Bowler", jersey: "19", matches: "103", runs: "1200", wickets: "183", id: 7 }
-    ];
-    DataMgr.save('players', players);
-  }
+  // Player dummy data removed - now handled by MySQL backend
 
   // Preload team rankings if empty
   ['ODI', 'T20I', 'TEST'].forEach(type => {
@@ -119,15 +113,7 @@ function initDummyData() {
   });
 
   // Preload countries if empty
-  if (DataMgr.getCountries().length === 0) {
-    const countries = [
-      { id: 1, name: "India", format: "All Formats", captain: "Rohit Sharma", coach: "Rahul Dravid", rank: 1 },
-      { id: 2, name: "Australia", format: "All Formats", captain: "Pat Cummins", coach: "Andrew McDonald", rank: 2 },
-      { id: 3, name: "England", format: "All Formats", captain: "Ben Stokes", coach: "Brendon McCullum", rank: 3 },
-      { id: 4, name: "Pakistan", format: "All Formats", captain: "Babar Azam", coach: "Grant Bradburn", rank: 4 }
-    ];
-    DataMgr.save('countries', countries);
-  }
+  // Country dummy data removed - now handled by MySQL backend
 }
 initDummyData();
 
@@ -217,17 +203,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Active nav link (Automatic based on URL) ──
-  const navLinks = document.querySelectorAll('.sidebar-link[data-page], .nav-link-custom[data-page]');
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-
-  navLinks.forEach(link => {
-    const linkPath = link.getAttribute('href');
-    if (linkPath === currentPath) {
+  const sidebarLinks = document.querySelectorAll('.sidebar-link, .nav-link-custom');
+  sidebarLinks.forEach(link => {
+    const page = link.getAttribute('data-page');
+    if (window.location.pathname.includes(page + '.html') || 
+        (page === 'dashboard' && (window.location.pathname.endsWith('/') || window.location.pathname.includes('index.html')))) {
       link.classList.add('active');
     } else {
       link.classList.remove('active');
     }
-
     link.addEventListener('click', () => {
       if (window.innerWidth < 992) closeSidebar();
     });
@@ -549,52 +533,95 @@ document.addEventListener('DOMContentLoaded', () => {
     const addForm = document.getElementById('addPlayerForm');
     const saveBtn = document.querySelector('#addPlayerModal .btn-primary-custom');
 
-    const renderPlayers = () => {
-      const players = DataMgr.getPlayers();
-      if (players.length === 0 && tableBody.children.length === 0) return; // Keep static demo if no local data
+    const renderPlayers = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/players');
+        const players = await response.json();
+        
+        if (!players || players.length === 0) {
+          if (tableBody.children.length === 0) return; // Keep static demo if no data
+        }
 
-      tableBody.innerHTML = '';
-      players.forEach((p, idx) => {
-        const initials = p.name.split(' ').map(n => n[0]).join('').toUpperCase();
-        const row = document.createElement('tr');
-        row.className = 'animate-row';
-        row.style.animationDelay = `${idx * 0.05}s`;
-        row.innerHTML = `
-          <td>
-            <div class="d-flex align-items-center gap-3">
-              <div class="player-avatar">${initials}</div>
-              <span class="fw-bold">${p.name}</span>
-            </div>
-          </td>
-          <td>${p.country}</td>
-          <td><span class="role-badge ${p.role.toLowerCase()}">${p.role}</span></td>
-          <td class="text-center">${p.jersey || '-'}</td>
-          <td class="text-end">${p.matches || 0}</td>
-          <td class="text-end fw-bold text-accent">${p.runs || 0}</td>
-          <td class="text-end">${p.wickets || 0}</td>
-          <td class="text-end" data-admin-only="true">
-            <button class="btn-icon view-player" data-id="${p.id}"><i class="fas fa-eye"></i></button>
-            <button class="btn-icon edit-player" data-id="${p.id}"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon text-danger delete-player" data-id="${p.id}"><i class="fas fa-trash"></i></button>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
-      attachPlayerListeners();
+        tableBody.innerHTML = '';
+        players.forEach((p, idx) => {
+          const initials = p.name.split(' ').map(n => n[0]).join('').toUpperCase();
+          const row = document.createElement('tr');
+          row.className = 'animate-row';
+          row.style.animationDelay = `${idx * 0.05}s`;
+          row.innerHTML = `
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <div class="player-avatar">${initials}</div>
+                <span class="fw-bold">${p.name}</span>
+              </div>
+            </td>
+            <td>${p.country}</td>
+            <td><span class="role-badge ${(p.role || '').toLowerCase()}">${p.role}</span></td>
+            <td class="text-center">${p.jersey || '-'}</td>
+            <td class="text-end">${p.matches || 0}</td>
+            <td class="text-end fw-bold text-accent">${p.runs || 0}</td>
+            <td class="text-end">${p.wickets || 0}</td>
+            <td class="text-end" data-admin-only="true">
+              <button class="btn-icon view-player" data-id="${p.player_id}"><i class="fas fa-eye"></i></button>
+              <button class="btn-icon edit-player" data-id="${p.player_id}"><i class="fas fa-edit"></i></button>
+              <button class="btn-icon text-danger delete-player" data-id="${p.player_id}"><i class="fas fa-trash"></i></button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+        attachPlayerListeners();
+      } catch (error) {
+        console.error("Error rendering players:", error);
+        // showToast('Failed to load players from database', 'danger');
+      }
     };
 
     const attachPlayerListeners = () => {
       // Delete
       document.querySelectorAll('.delete-player').forEach(btn => {
-        btn.addEventListener('click', () => {
+      
+        btn.addEventListener('click', async () => {
+      
+          console.log("DELETE PLAYER BUTTON CLICKED");
+      
           if (currentUser.role !== 'Admin') return;
+      
           const id = parseInt(btn.dataset.id);
+      
+          console.log("PLAYER ID:", id);
+      
           if (confirm('Are you sure you want to delete this player?')) {
-            DataMgr.deletePlayer(id);
-            renderPlayers();
-            showToast('Player deleted', 'success');
+      
+            try {
+      
+              console.log("SENDING DELETE REQUEST...");
+      
+              const response = await fetch(`http://localhost:5000/delete-player/${id}`, {
+      
+                method: 'DELETE'
+      
+              });
+      
+              const result = await response.text();
+      
+              console.log("SERVER RESPONSE:", result);
+      
+              showToast('Player deleted from database!', 'success');
+      
+              renderPlayers();
+      
+            } catch(error) {
+      
+              console.log("DELETE ERROR:", error);
+      
+              showToast('Backend delete failed', 'danger');
+      
+            }
+      
           }
+      
         });
+      
       });
 
       // View
@@ -639,33 +666,63 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     };
 
-    saveBtn.onclick = () => {
-      if (currentUser.role !== 'Admin') return;
-      const player = {
-        name: document.getElementById('pName').value,
-        country: document.getElementById('pCountry').value,
-        role: document.getElementById('pRole').value,
-        jersey: document.getElementById('pJersey').value,
-        matches: document.getElementById('pMatches').value,
-        runs: document.getElementById('pRuns').value,
-        wickets: document.getElementById('pWickets').value
-      };
-
-      if (!player.name || !player.country || !player.role) return showToast('Please fill required fields', 'info');
-
-      if (saveBtn.dataset.mode === 'edit') {
-        DataMgr.updatePlayer(parseInt(saveBtn.dataset.id), player);
-        showToast('Player updated successfully!', 'success');
-      } else {
-        DataMgr.addPlayer(player);
-        showToast('Player added successfully!', 'success');
-      }
-
-      renderPlayers();
-      addForm.reset();
-      saveBtn.dataset.mode = 'add';
-      document.querySelector('#addPlayerModal .modal-title').innerHTML = '<i class="fas fa-user-plus me-2 text-accent"></i>Add New Player';
-      bootstrap.Modal.getInstance(document.getElementById('addPlayerModal')).hide();
+    saveBtn.onclick = async () => {
+    
+        console.log("ADD PLAYER BUTTON CLICKED");
+    
+        if (currentUser.role !== 'Admin') return;
+    
+        const player = {
+            name: document.getElementById('pName').value,
+            country: document.getElementById('pCountry').value,
+            role: document.getElementById('pRole').value,
+            runs: document.getElementById('pRuns').value
+        };
+    
+        console.log("PLAYER DATA:", player);
+    
+        if (!player.name || !player.country || !player.role) {
+            return showToast('Please fill required fields', 'info');
+        }
+    
+        try {
+    
+            console.log("SENDING DATA TO BACKEND...");
+    
+            const response = await fetch('http://localhost:5000/add-player', {
+    
+                method: 'POST',
+    
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+    
+                body: JSON.stringify(player)
+    
+            });
+    
+            console.log("FETCH RESPONSE:", response);
+    
+            const result = await response.text();
+    
+            console.log("SERVER RESPONSE:", result);
+    
+            showToast('Player added to database!', 'success');
+    
+            addForm.reset();
+    
+            bootstrap.Modal
+                .getInstance(document.getElementById('addPlayerModal'))
+                .hide();
+    
+        } catch(error) {
+    
+            console.log("FETCH ERROR:", error);
+    
+            showToast('Backend connection failed', 'danger');
+    
+        }
+    
     };
 
     renderPlayers();
@@ -677,73 +734,80 @@ document.addEventListener('DOMContentLoaded', () => {
     const addForm = document.getElementById('addCountryForm');
     const saveBtn = document.querySelector('#addCountryModal .btn-primary-custom');
 
-    const renderCountries = () => {
-      const countries = DataMgr.getCountries();
-      if (countries.length === 0) return;
+    const renderCountries = async () => {
+      try {
+        console.log("FETCHING COUNTRIES FROM BACKEND...");
+        const response = await fetch('http://localhost:5000/countries');
+        const countries = await response.json();
+        
+        if (!countries || countries.length === 0) {
+            if (tableBody.children.length === 0) return;
+        }
 
-      tableBody.innerHTML = '';
-      countries.forEach((c, idx) => {
-        const row = document.createElement('tr');
-        row.className = 'animate-row';
-        row.style.animationDelay = `${idx * 0.05}s`;
-        row.innerHTML = `
-          <td>
-            <div class="d-flex align-items-center gap-2">
-              <span class="fw-bold">${c.name}</span>
-            </div>
-          </td>
-          <td>${c.format || 'All Formats'}</td>
-          <td>${c.captain || '-'}</td>
-          <td>${c.coach || '-'}</td>
-          <td class="text-center"><span class="badge-rank">${c.rank || '-'}</span></td>
-          <td class="text-end" data-admin-only="true">
-            <button class="btn-icon edit-country" data-id="${c.id}"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon text-danger delete-country" data-id="${c.id}"><i class="fas fa-trash"></i></button>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
-      attachCountryListeners();
+        tableBody.innerHTML = '';
+        countries.forEach((c, idx) => {
+          const row = document.createElement('tr');
+          row.className = 'animate-row';
+          row.style.animationDelay = `${idx * 0.05}s`;
+          row.innerHTML = `
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold">${c.country_name}</span>
+              </div>
+            </td>
+            <td>${c.format || 'All Formats'}</td>
+            <td>${c.captain || '-'}</td>
+            <td>${c.head_coach || '-'}</td>
+            <td class="text-center"><span class="badge-rank">${c.ranking || '-'}</span></td>
+            <td class="text-end" data-admin-only="true">
+              <button class="btn-icon edit-country" data-id="${c.country_id}"><i class="fas fa-edit"></i></button>
+              <button class="btn-icon text-danger delete-country" data-id="${c.country_id}"><i class="fas fa-trash"></i></button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+        attachCountryListeners();
+      } catch (error) {
+        console.error("Error rendering countries:", error);
+      }
     };
 
     const attachCountryListeners = () => {
       // Delete
       document.querySelectorAll('.delete-country').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           if (currentUser.role !== 'Admin') return;
           const id = parseInt(btn.dataset.id);
+          console.log("DELETE COUNTRY CLICKED, ID:", id);
+          
           if (confirm('Delete this country?')) {
-            DataMgr.deleteCountry(id);
-            renderCountries();
-            showToast('Country removed', 'success');
+            try {
+              const response = await fetch(`http://localhost:5000/delete-country/${id}`, {
+                method: 'DELETE'
+              });
+              const result = await response.text();
+              console.log("SERVER RESPONSE:", result);
+              showToast('Country removed from database!', 'success');
+              renderCountries();
+            } catch (error) {
+              console.error("Delete Error:", error);
+              showToast('Backend delete failed', 'danger');
+            }
           }
         });
       });
 
-      // Edit
+      // Edit (Placeholder for now as per user request to keep UI unchanged but focus on add/delete sync)
       document.querySelectorAll('.edit-country').forEach(btn => {
         btn.addEventListener('click', () => {
-          if (currentUser.role !== 'Admin') return;
-          const id = parseInt(btn.dataset.id);
-          const c = DataMgr.getCountries().find(x => x.id === id);
-          if (c) {
-            document.getElementById('cName').value = c.name;
-            document.getElementById('cFormat').value = c.format;
-            document.getElementById('cCaptain').value = c.captain;
-            document.getElementById('cCoach').value = c.coach;
-            document.getElementById('cRank').value = c.rank;
-
-            saveBtn.dataset.mode = 'edit';
-            saveBtn.dataset.id = id;
-            document.querySelector('#addCountryModal .modal-title').innerHTML = '<i class="fas fa-edit-circle me-2 text-accent"></i>Edit Country';
-            new bootstrap.Modal(document.getElementById('addCountryModal')).show();
-          }
+          showToast('Edit feature coming soon to MySQL backend!', 'info');
         });
       });
     };
 
-    saveBtn.onclick = () => {
+    saveBtn.onclick = async () => {
       if (currentUser.role !== 'Admin') return;
+      
       const country = {
         name: document.getElementById('cName').value,
         format: document.getElementById('cFormat').value,
@@ -752,21 +816,29 @@ document.addEventListener('DOMContentLoaded', () => {
         rank: document.getElementById('cRank').value
       };
 
+      console.log("COLLECTED COUNTRY DATA:", country);
+
       if (!country.name || !country.format) return showToast('Please fill name and format', 'info');
 
-      if (saveBtn.dataset.mode === 'edit') {
-        DataMgr.updateCountry(parseInt(saveBtn.dataset.id), country);
-        showToast('Country updated successfully!', 'success');
-      } else {
-        DataMgr.addCountry(country);
-        showToast('Country added successfully!', 'success');
-      }
+      try {
+        console.log("SENDING COUNTRY TO BACKEND...");
+        const response = await fetch('http://localhost:5000/add-country', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(country)
+        });
 
-      renderCountries();
-      addForm.reset();
-      saveBtn.dataset.mode = 'add';
-      document.querySelector('#addCountryModal .modal-title').innerHTML = '<i class="fas fa-plus-circle me-2 text-accent"></i>Add New Country';
-      bootstrap.Modal.getInstance(document.getElementById('addCountryModal')).hide();
+        const result = await response.text();
+        console.log("SERVER RESPONSE:", result);
+        showToast('Country added to database!', 'success');
+        
+        renderCountries();
+        addForm.reset();
+        bootstrap.Modal.getInstance(document.getElementById('addCountryModal')).hide();
+      } catch (error) {
+        console.error("Add Country Error:", error);
+        showToast('Backend connection failed', 'danger');
+      }
     };
 
     renderCountries();
@@ -879,39 +951,107 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('upcomingMatchesRow');
     if (!container) return;
 
-    // Load both static mock matches and scheduled matches from storage
-    const scheduled = DataMgr.getMatches();
-    const staticMatches = [
-      { date: 'TOMORROW', team1: 'Pakistan', flag1: '🇵🇰', team2: 'New Zealand', flag2: '🇳🇿', venue: 'Lahore', time: '14:30' },
-      { date: 'IN 2 DAYS', team1: 'Sri Lanka', flag1: '🇱🇰', team2: 'West Indies', flag2: '🏝️', venue: 'Galle', time: '09:30' }
-    ];
+    try {
+      console.log("FETCHING MATCHES FROM BACKEND...");
+      const response = await fetch('http://localhost:5000/matches');
+      const scheduledMatches = await response.json();
 
-    const allMatches = [...scheduled.map(m => ({
-      date: m.date, team1: m.t1, team2: m.t2, venue: m.venue, time: 'TBD', isScheduled: true
-    })), ...staticMatches];
+      console.log("Fetched MySQL matches:", scheduledMatches);
+      const allMatches = scheduledMatches.map(m => ({ ...m, isScheduled: true }));
 
-    container.innerHTML = '';
-    allMatches.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'col-md-6';
-      card.innerHTML = `
-        <div class="match-card-detailed animate-in">
-          <div class="match-header">
-            <span class="match-badge ${m.isScheduled ? 'badge-live' : 'badge-upcoming'}" style="${m.isScheduled ? 'background:rgba(0,212,255,0.1);color:var(--accent)' : ''}">
-              ${m.isScheduled ? 'SCHEDULED' : m.date}
-            </span>
-            <span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> ${m.venue}</span>
+      container.innerHTML = '';
+      allMatches.forEach(m => {
+        const card = document.createElement('div');
+        card.className = 'col-md-6';
+        card.innerHTML = `
+          <div class="match-card-detailed animate-in">
+            <div class="match-header">
+              <span class="match-badge ${m.isScheduled ? 'badge-live' : 'badge-upcoming'}" style="${m.isScheduled ? 'background:rgba(0,212,255,0.1);color:var(--accent)' : ''}">
+                ${m.isScheduled ? 'SCHEDULED' : m.match_date}
+              </span>
+              <span class="match-info text-muted"><i class="fas fa-map-marker-alt"></i> ${m.venue}</span>
+            </div>
+            <div class="match-body">
+              <div class="team-block"><div class="team-stats"><div class="name">${m.team1}</div></div></div>
+              <div class="vs-text">VS</div>
+              <div class="team-block text-end flex-row-reverse"><div class="team-stats align-items-end"><div class="name">${m.team2}</div></div></div>
+            </div>
+            <div class="match-footer d-flex justify-content-between align-items-center">
+              <div class="status-text text-muted">${m.isScheduled ? 'Date: ' + m.match_date : 'Starts at ' + m.time + ' IST'}</div>
+              ${m.isScheduled ? `<button class="btn-icon text-danger delete-match" data-id="${m.match_id}"><i class="fas fa-trash"></i></button>` : ''}
+            </div>
           </div>
-          <div class="match-body">
-            <div class="team-block"><div class="team-stats"><div class="name">${m.team1}</div></div></div>
-            <div class="vs-text">VS</div>
-            <div class="team-block text-end flex-row-reverse"><div class="team-stats align-items-end"><div class="name">${m.team2}</div></div></div>
-          </div>
-          <div class="match-footer"><div class="status-text text-muted">${m.isScheduled ? 'Date: ' + m.date : 'Starts at ' + m.time + ' IST'}</div></div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
+        `;
+        container.appendChild(card);
+      });
+
+      // Attach Delete Listeners
+      document.querySelectorAll('.delete-match').forEach(btn => {
+        btn.onclick = async () => {
+          if (currentUser.role !== 'Admin') return;
+          const id = btn.dataset.id;
+          if (confirm('Are you sure you want to cancel/delete this scheduled match?')) {
+            try {
+              const res = await fetch(`http://localhost:5000/delete-match/${id}`, { method: 'DELETE' });
+              const result = await res.text();
+              console.log("SERVER RESPONSE:", result);
+              showToast('Match removed from schedule', 'success');
+              renderUpcomingMatches();
+            } catch (err) {
+              console.error("Delete Match Error:", err);
+              showToast('Failed to delete match', 'danger');
+            }
+          }
+        };
+      });
+
+    } catch (error) {
+      console.error("Error rendering matches:", error);
+      container.innerHTML = '<div class="col-12 text-center py-4 text-danger">Failed to load schedule from backend.</div>';
+    }
+  }
+
+  // --- Add Match Event Listener ---
+  const saveMatchBtn = document.getElementById('btnSaveMatch');
+  if (saveMatchBtn) {
+    saveMatchBtn.onclick = async () => {
+        if (currentUser.role !== 'Admin') return;
+
+        const match = {
+            team1: document.getElementById('mTeam1').value,
+            team2: document.getElementById('mTeam2').value,
+            format: document.getElementById('mFormat').value,
+            match_date: document.getElementById('mDate').value,
+            venue: document.getElementById('mVenue').value
+        };
+
+        console.log("COLLECTED MATCH DATA:", match);
+
+        if (!match.team1 || !match.team2 || !match.match_date) {
+            return showToast('Please fill all required fields', 'info');
+        }
+
+        try {
+            console.log("SENDING MATCH TO BACKEND...");
+            const response = await fetch('http://localhost:5000/add-match', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(match)
+            });
+
+            const result = await response.text();
+            console.log("SERVER RESPONSE:", result);
+            showToast('Match scheduled successfully!', 'success');
+            
+            renderUpcomingMatches();
+            bootstrap.Modal.getInstance(document.getElementById('addMatchModal')).hide();
+            // Reset form
+            document.querySelector('#addMatchModal form').reset();
+        } catch (error) {
+            console.error("Schedule Match Error:", error);
+            showToast('Backend connection failed', 'danger');
+        }
+    };
   }
 
   // 4. Player Statistics Modal Enhancement
@@ -1079,10 +1219,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const q = query.toLowerCase();
       const results = [];
 
-      // 1. Players
-      DataMgr.getPlayers().filter(p => p.name.toLowerCase().includes(q) || p.country.toLowerCase().includes(q)).forEach(p => {
-        results.push({ text: p.name, sub: `${p.country} · ${p.role}`, type: 'Player', link: 'players.html', icon: 'user' });
-      });
+      // 1. Players (From local storage - currently empty as migrated to MySQL)
+      const localPlayers = DataMgr.getPlayers();
+      if (Array.isArray(localPlayers)) {
+        localPlayers.filter(p => p.name.toLowerCase().includes(q) || p.country.toLowerCase().includes(q)).forEach(p => {
+          results.push({ text: p.name, sub: `${p.country} · ${p.role}`, type: 'Player', link: 'players.html', icon: 'user' });
+        });
+      }
 
       // 2. Countries
       DataMgr.getCountries().filter(c => c.name.toLowerCase().includes(q)).forEach(c => {
@@ -1348,6 +1491,60 @@ document.addEventListener('DOMContentLoaded', () => {
       notifDropdownEl.classList.toggle('show');
     };
     document.addEventListener('click', () => notifDropdownEl.classList.remove('show'));
+  }
+
+  // ── Activity Logs Page Logic ──
+  if (window.location.pathname.includes('logs.html')) {
+    const logsTableBody = document.getElementById('logsTableBody');
+
+    const renderLogs = async () => {
+      if (!logsTableBody) return;
+      try {
+        const response = await fetch('http://localhost:5000/logs');
+        const logs = await response.json();
+
+        if (!logs || logs.length === 0) {
+          logsTableBody.innerHTML = '<tr><td colspan="3" class="text-center py-5 text-muted">No activity logs found in database.</td></tr>';
+          return;
+        }
+
+        logsTableBody.innerHTML = '';
+        logs.forEach((log, idx) => {
+          const row = document.createElement('tr');
+          row.className = 'animate-row';
+          row.style.animationDelay = `${idx * 0.03}s`;
+          
+          const date = new Date(log.log_time);
+          const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          row.innerHTML = `
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="stat-icon icon-blue" style="width:30px;height:30px;font-size:.8rem">
+                  <i class="fas fa-user-shield"></i>
+                </div>
+                <span class="fw-bold">${log.username}</span>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge ${log.activity.toLowerCase().includes('delete') ? 'bg-danger' : 'bg-success'} p-1" style="font-size:.6rem">
+                  ${log.activity.split(' ')[0].toUpperCase()}
+                </span>
+                <span>${log.activity}</span>
+              </div>
+            </td>
+            <td class="text-end text-muted small">${formattedDate}</td>
+          `;
+          logsTableBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error("Error fetching logs:", error);
+        logsTableBody.innerHTML = '<tr><td colspan="3" class="text-center py-5 text-danger">Failed to connect to backend server.</td></tr>';
+      }
+    };
+
+    renderLogs();
   }
 
   console.log('%cFunctional Audit Complete ✓', 'color:#00ff94;font-weight:bold;');

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activity Logs | ICC Cricket Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════ PAGE LOADER ═══════════════ -->
+  <div id="pageLoader" class="page-loader">
+    <div class="loader-spinner"></div>
+  </div>
+
+  <!-- ═══════════════ SIDEBAR OVERLAY ═══════════════ -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ═══════════════ NAVBAR ═══════════════ -->
+  <nav class="navbar">
+    <div class="d-flex align-items-center gap-3">
+      <button class="sidebar-toggle btn p-0 border-0 me-1" style="color:var(--muted);font-size:1.2rem;">
+        <i class="fas fa-bars"></i>
+      </button>
+      <a href="index.html" class="navbar-brand">
+        <div class="brand-icon"><i class="fas fa-cricket-bat-ball"></i></div>
+        <span class="brand-text d-none d-sm-block">ICC <span>Cricket</span></span>
+      </a>
+    </div>
+
+    <div class="navbar-right ms-auto">
+      <button id="themeToggle" class="notification-btn"><i class="fas fa-moon"></i></button>
+      <div class="user-avatar" id="userAvatar">AD</div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ SIDEBAR ═══════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <span class="sidebar-section-title">Main Menu</span>
+    <a href="index.html" class="sidebar-link" data-page="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="countries.html" class="sidebar-link" data-page="countries"><i class="fas fa-flag"></i> Countries</a>
+    <a href="players.html" class="sidebar-link" data-page="players"><i class="fas fa-person-running"></i> Players</a>
+    <a href="matches.html" class="sidebar-link" data-page="matches"><i class="fas fa-baseball-bat-ball"></i> Matches</a>
+
+    <span class="sidebar-section-title">Management</span>
+    <a href="logs.html" class="sidebar-link active" data-page="logs"><i class="fas fa-history"></i> Activity Logs</a>
+    <a href="settings.html" class="sidebar-link" data-page="settings"><i class="fas fa-cog"></i> Settings</a>
+
+    <div class="sidebar-footer">
+      <a href="#" class="sidebar-link" style="color:#ff6b8a"><i class="fas fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </aside>
+
+  <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+  <main class="main-content">
+    <section class="animate-in">
+      <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+          <h1 class="page-title mb-1">System Activity Logs</h1>
+          <p class="text-muted small mb-0">Monitor all administrative actions synchronized with MySQL database.</p>
+        </div>
+        <button class="btn btn-primary-custom btn-sm" onclick="location.reload()">
+          <i class="fas fa-sync-alt me-1"></i> Refresh
+        </button>
+      </div>
+
+      <div class="content-card">
+        <div class="table-responsive">
+          <table class="table custom-table align-middle" id="logsTable">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Activity Description</th>
+                <th class="text-end">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="logsTableBody">
+              <!-- Logs injected here -->
+              <tr>
+                <td colspan="3" class="text-center py-5">
+                  <div class="spinner-border text-accent spinner-border-sm me-2"></div>
+                  Loading logs from database...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="dashboard-footer">
+      &copy; 2025 <span>ICC Cricket Management System</span> &nbsp;|&nbsp; Live Database Activity
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
